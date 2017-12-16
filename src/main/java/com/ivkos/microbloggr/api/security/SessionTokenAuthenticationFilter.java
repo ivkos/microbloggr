@@ -20,7 +20,7 @@ import com.ivkos.microbloggr.user.models.UserSession;
 import com.ivkos.microbloggr.user.services.UserSessionService;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.util.matcher.RequestMatcher;
+import org.springframework.stereotype.Component;
 import org.springframework.web.filter.GenericFilterBean;
 
 import javax.servlet.FilterChain;
@@ -31,13 +31,14 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.UUID;
 
+@Component
 class SessionTokenAuthenticationFilter extends GenericFilterBean
 {
     public static final String HEADER_SESSION_ID = "X-Session-Id";
 
     private final UserSessionService userSessionService;
 
-    SessionTokenAuthenticationFilter(RequestMatcher requestMatcher, UserSessionService userSessionService)
+    SessionTokenAuthenticationFilter(UserSessionService userSessionService)
     {
         super();
         this.userSessionService = userSessionService;

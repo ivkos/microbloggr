@@ -25,6 +25,7 @@ import com.ivkos.microbloggr.user.models.UserSession;
 import com.ivkos.microbloggr.user.services.UserSessionService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -50,9 +51,11 @@ class LoginAuthenticationFilter extends AbstractAuthenticationProcessingFilter i
     LoginAuthenticationFilter(RequestMatcher requestMatcher,
                               UserSessionService userSessionService,
                               HandlerExceptionResolver handlerExceptionResolver,
-                              ObjectMapper mapper)
+                              ObjectMapper mapper,
+                              AuthenticationManager authenticationManager)
     {
         super(requestMatcher);
+        this.setAuthenticationManager(authenticationManager);
 
         this.userSessionService = userSessionService;
         this.mapper = mapper;

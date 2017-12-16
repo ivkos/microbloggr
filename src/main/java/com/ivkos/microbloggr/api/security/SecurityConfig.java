@@ -18,12 +18,10 @@ package com.ivkos.microbloggr.api.security;
 
 import com.ivkos.microbloggr.api.support.Endpoint;
 import com.ivkos.microbloggr.user.models.User;
-import com.ivkos.microbloggr.user.services.UserSessionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.AdviceMode;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -36,9 +34,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-import org.springframework.security.web.util.matcher.AnyRequestMatcher;
-import org.springframework.web.servlet.HandlerExceptionResolver;
 
 import static org.springframework.http.HttpMethod.POST;
 
@@ -48,24 +43,21 @@ import static org.springframework.http.HttpMethod.POST;
 class SecurityConfig extends WebSecurityConfigurerAdapter
 {
     private final UserDetailsService userDetailsService;
-    private final UserSessionService userSessionService;
-    private final MappingJackson2HttpMessageConverter jacksonConverter;
     private final AuthenticationEntryPoint authenticationEntryPoint;
-    private final HandlerExceptionResolver handlerExceptionResolver;
+    private final SessionTokenAuthenticationFilter sessionTokenAuthenticationFilter;
+    private final LoginAuthenticationFilterFactory loginAuthenticationFilterFactory;
 
     @Autowired
     SecurityConfig(UserDetailsService userDetailsService,
-                   UserSessionService userSessionService,
-                   MappingJackson2HttpMessageConverter jacksonConverter,
                    AuthenticationEntryPoint authenticationEntryPoint,
-                   HandlerExceptionResolver handlerExceptionResolver)
+                   SessionTokenAuthenticationFilter sessionTokenAuthenticationFilter,
+                   LoginAuthenticationFilterFactory loginAuthenticationFilterFactory)
     {
         super(true);
         this.userDetailsService = userDetailsService;
-        this.userSessionService = userSessionService;
-        this.jacksonConverter = jacksonConverter;
         this.authenticationEntryPoint = authenticationEntryPoint;
-        this.handlerExceptionResolver = handlerExceptionResolver;
+        this.sessionTokenAuthenticationFilter = sessionTokenAuthenticationFilter;
+        this.loginAuthenticationFilterFactory = loginAuthenticationFilterFactory;
     }
 
     @Override
@@ -93,8 +85,11 @@ class SecurityConfig extends WebSecurityConfigurerAdapter
             .antMatchers(POST, Endpoint.CHECK_VANITY).permitAll()
             .anyRequest().authenticated()
             .and()
-            .addFilterAt(provideLoginAuthFilter(), UsernamePasswordAuthenticationFilter.class)
-            .addFilterBefore(provideSessionTokenAuthFilter(), BasicAuthenticationFilter.class)
+            .addFilterAt(
+                loginAuthenticationFilterFactory.create(authenticationManager()),
+                UsernamePasswordAuthenticationFilter.class
+            )
+            .addFilterBefore(sessionTokenAuthenticationFilter, BasicAuthenticationFilter.class)
         ;
     }
 
@@ -102,27 +97,5 @@ class SecurityConfig extends WebSecurityConfigurerAdapter
     PasswordEncoder providePasswordEncoder()
     {
         return new BCryptPasswordEncoder(7);
-    }
-
-    private LoginAuthenticationFilter provideLoginAuthFilter() throws Exception
-    {
-        LoginAuthenticationFilter filter = new LoginAuthenticationFilter(
-            new AntPathRequestMatcher(Endpoint.LOGIN, POST.name()),
-            userSessionService,
-            handlerExceptionResolver,
-            jacksonConverter.getObjectMapper()
-        );
-
-        filter.setAuthenticationManager(authenticationManager());
-
-        return filter;
-    }
-
-    private SessionTokenAuthenticationFilter provideSessionTokenAuthFilter()
-    {
-        return new SessionTokenAuthenticationFilter(
-            AnyRequestMatcher.INSTANCE,
-            userSessionService
-        );
     }
 }
