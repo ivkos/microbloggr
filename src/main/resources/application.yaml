@@ -1,0 +1,33 @@
+debug: false
+
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/microbloggr
+    username: microbloggr
+    password: microbloggr
+  jpa:
+    show-sql: false
+    database: postgresql
+    hibernate:
+      ddl-auto: update
+      naming:
+        strategy: org.springframework.boot.orm.jpa.hibernate.SpringNamingStrategy
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQL94Dialect
+        jdbc.use_get_generated_keys: true
+        temp.use_jdbc_metadata_defaults: false
+  jmx:
+    enabled: false
+  jackson:
+    serialization:
+      write_dates_as_timestamps: false
+    default-property-inclusion: non_null
+
+server:
+  port: 8000
+  compression:
+    enabled: false
+  ssl:
+    enabled: false
