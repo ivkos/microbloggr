@@ -19,7 +19,9 @@ package com.ivkos.microbloggr.support;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InjectionPoint;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Scope;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
 
@@ -29,6 +31,7 @@ import java.lang.reflect.Field;
 class SmartNamedLoggerProvider
 {
     @Bean
+    @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     Logger provideLogger(InjectionPoint point)
     {
         MethodParameter methodParameter = point.getMethodParameter();
