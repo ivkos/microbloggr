@@ -19,6 +19,7 @@ package com.ivkos.microbloggr.user.controllers;
 import com.ivkos.microbloggr.support.Role;
 import com.ivkos.microbloggr.user.models.User;
 import com.ivkos.microbloggr.user.services.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
@@ -33,6 +34,7 @@ class UserController
 {
     private final UserService userService;
 
+    @Autowired
     UserController(UserService userService)
     {
         this.userService = userService;
