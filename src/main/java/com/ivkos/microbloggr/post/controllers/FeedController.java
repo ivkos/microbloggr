@@ -17,7 +17,7 @@
 package com.ivkos.microbloggr.post.controllers;
 
 import com.ivkos.microbloggr.post.models.Post;
-import com.ivkos.microbloggr.post.services.FeedService;
+import com.ivkos.microbloggr.post.services.PostService;
 import com.ivkos.microbloggr.user.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -31,17 +31,17 @@ import java.util.List;
 @RequestMapping("/feed")
 class FeedController
 {
-    private final FeedService feedService;
+    private final PostService postService;
 
     @Autowired
-    FeedController(FeedService feedService)
+    FeedController(PostService postService)
     {
-        this.feedService = feedService;
+        this.postService = postService;
     }
 
     @GetMapping
     List<Post> getFeed(@AuthenticationPrincipal User user)
     {
-        return feedService.getFeedForUser(user);
+        return postService.getFeedForUser(user);
     }
 }

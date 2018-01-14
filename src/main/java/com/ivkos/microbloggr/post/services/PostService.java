@@ -39,4 +39,6 @@ public interface PostService
     Post updatePost(Post post);
 
     void deletePost(Post post);
+
+    List<Post> getFeedForUser(User user);
 }

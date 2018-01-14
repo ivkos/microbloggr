@@ -16,6 +16,7 @@
 
 package com.ivkos.microbloggr.post.services.impl;
 
+import com.ivkos.microbloggr.follow.services.FollowService;
 import com.ivkos.microbloggr.post.models.Post;
 import com.ivkos.microbloggr.post.models.PostType;
 import com.ivkos.microbloggr.post.repositories.PostRepository;
@@ -25,21 +26,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
 class PostServiceImpl implements PostService
 {
     private final PostRepository repository;
+    private final FollowService followService;
 
     @Autowired
-    PostServiceImpl(PostRepository repository)
+    PostServiceImpl(PostRepository repository, FollowService followService)
     {
         this.repository = repository;
+        this.followService = followService;
     }
 
     @Override
@@ -93,5 +93,15 @@ class PostServiceImpl implements PostService
         if (thePost == null) return;
 
         repository.delete(post);
+    }
+
+    @Override
+    public List<Post> getFeedForUser(User user)
+    {
+        List<User> followees = followService.getFolloweesOfUser(user);
+
+        if (followees.isEmpty()) return Collections.emptyList();
+
+        return getPostsByMultipleUsers(followees);
     }
 }
