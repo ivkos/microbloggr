@@ -77,4 +77,10 @@ public class Post
     {
         return content;
     }
+
+    public Post setContent(String content)
+    {
+        this.content = content;
+        return this;
+    }
 }
