@@ -93,6 +93,11 @@ public class UserSession
         return this;
     }
 
+    public Instant getLastSeenAt()
+    {
+        return lastSeenAt;
+    }
+
     public UserSession setLastSeenAt(Instant lastSeenAt)
     {
         this.lastSeenAt = lastSeenAt;
