@@ -72,7 +72,7 @@ public class UserSessionServiceTest
     }
 
     @Test
-    public void thatLastSeenIsUpdated()
+    public void thatLastSeenIsUpdated() throws Exception
     {
         User user = userService.createUser("me@ivkos.com", "password", "ivkos");
         assertNotNull(user);
@@ -86,6 +86,8 @@ public class UserSessionServiceTest
         UserSession session2 = userSessionService.updateLastSeen(session);
         Instant lastSeen2 = session2.getLastSeenAt();
         assertNotNull(lastSeen2);
+
+        Thread.sleep(5);
 
         UserSession session3 = userSessionService.updateLastSeen(session2);
         Instant lastSeen3 = session3.getLastSeenAt();
