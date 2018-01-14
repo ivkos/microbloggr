@@ -25,7 +25,7 @@ import java.util.stream.Stream;
 
 public interface PostLikeRepository extends JpaRepository<PostLike, PostLikeId>
 {
-    long countByPost(Post post);
+    long countByIdPost(Post post);
 
-    Stream<PostLike> findByPostOrderByCreatedAtDesc(Post post);
+    Stream<PostLike> findByIdPostOrderByCreatedAtDesc(Post post);
 }

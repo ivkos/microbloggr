@@ -69,7 +69,7 @@ class PostLikeServiceImpl implements PostLikeService
     @Override
     public List<User> getLikersOfPost(Post post)
     {
-        return likeRepository.findByPostOrderByCreatedAtDesc(post)
+        return likeRepository.findByIdPostOrderByCreatedAtDesc(post)
             .map(PostLike::getLiker)
             .collect(Collectors.toList());
     }
@@ -77,6 +77,6 @@ class PostLikeServiceImpl implements PostLikeService
     @Override
     public long getLikeCountOfPost(Post post)
     {
-        return likeRepository.countByPost(post);
+        return likeRepository.countByIdPost(post);
     }
 }
