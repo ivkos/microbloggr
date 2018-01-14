@@ -24,6 +24,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.UUID;
@@ -48,6 +49,20 @@ public class UserServiceTest
 
         List<User> list = userService.findAll();
         assertThat(list.size(), is(greaterThanOrEqualTo(2)));
+    }
+
+    @Test(expected = EntityExistsException.class)
+    public void thatItFailsForExistingEmail()
+    {
+        userService.createUser("me@ivkos.com", "password", "ivkos");
+        userService.createUser("me@ivkos.com", "password", "ivkos2");
+    }
+
+    @Test(expected = EntityExistsException.class)
+    public void thatItFailsForExistingVanity()
+    {
+        userService.createUser("me@ivkos.com", "password", "ivkos");
+        userService.createUser("me2@ivkos.com", "password", "ivkos");
     }
 
     @Test
