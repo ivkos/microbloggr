@@ -35,7 +35,7 @@ public class FollowId implements Serializable
     @JoinColumn(name = "followee_id")
     private User followee;
 
-    public FollowId() { }
+    FollowId() { }
 
     public FollowId(User follower, User followee)
     {
