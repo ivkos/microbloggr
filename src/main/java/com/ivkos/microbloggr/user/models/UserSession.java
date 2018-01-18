@@ -25,7 +25,6 @@ import java.time.Instant;
 import java.util.UUID;
 
 @Entity
-@Table(name = "user_sessions")
 public class UserSession
 {
     public static final long SESSION_VALIDITY_DAYS = 6 * 30;

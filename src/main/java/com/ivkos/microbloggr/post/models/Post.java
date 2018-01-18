@@ -25,7 +25,6 @@ import java.util.UUID;
 import static java.time.Instant.now;
 
 @Entity
-@Table(name = "posts")
 public class Post
 {
     @Id

@@ -21,13 +21,11 @@ import com.ivkos.microbloggr.user.models.User;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.Table;
 import java.time.Instant;
 
 import static java.time.Instant.now;
 
 @Entity
-@Table(name = "post_likes")
 public class PostLike
 {
     @EmbeddedId
