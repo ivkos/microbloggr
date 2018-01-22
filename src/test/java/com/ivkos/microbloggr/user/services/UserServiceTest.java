@@ -44,7 +44,7 @@ public class UserServiceTest
     @Test
     public void thatFindAllReturnsTheUsers()
     {
-        userService.createUser("me@ivkos.com", "password", "ivkos");
+        userService.createUser("me@ivkos.com", "password", "ivkos", "Ivaylo Stoyanov");
         userService.createUser("ivaylo@ivkos.com", "password", "ivaylo");
 
         List<User> list = userService.findAll();

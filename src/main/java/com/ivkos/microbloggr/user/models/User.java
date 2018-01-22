@@ -86,6 +86,14 @@ public class User implements UserDetails
         this.vanity = vanity;
     }
 
+    public User(String email, String password, String vanity, String name)
+    {
+        this.email = email;
+        this.password = password;
+        this.vanity = vanity;
+        this.name = name;
+    }
+
     public UUID getId()
     {
         return id;

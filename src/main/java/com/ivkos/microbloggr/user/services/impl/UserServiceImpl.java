@@ -43,6 +43,12 @@ class UserServiceImpl implements UserService
     @Override
     public User createUser(String email, String password, String vanity)
     {
+        return createUser(email, password, vanity, null);
+    }
+
+    @Override
+    public User createUser(String email, String password, String vanity, String name)
+    {
         email = email.trim();
         vanity = vanity.trim();
 
@@ -52,7 +58,8 @@ class UserServiceImpl implements UserService
         return repo.save(new User(
             email,
             passwordEncoder.encode(password),
-            vanity
+            vanity,
+            name
         ));
     }
 

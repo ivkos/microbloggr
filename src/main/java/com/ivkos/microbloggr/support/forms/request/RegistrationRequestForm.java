@@ -24,12 +24,14 @@ import javax.validation.constraints.Pattern;
 
 public class RegistrationRequestForm
 {
+    public String name;
+
+    @Pattern(regexp = User.REGEX_VANITY)
+    public String vanity;
+
     @Email
     public String email;
 
     @NotBlank
     public String password;
-
-    @Pattern(regexp = User.REGEX_VANITY)
-    public String vanity;
 }

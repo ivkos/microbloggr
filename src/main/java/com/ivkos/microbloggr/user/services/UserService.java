@@ -25,6 +25,8 @@ public interface UserService
 {
     User createUser(String email, String password, String vanity);
 
+    User createUser(String email, String password, String vanity, String name);
+
     List<User> findAll();
 
     User findByEmail(String email);
