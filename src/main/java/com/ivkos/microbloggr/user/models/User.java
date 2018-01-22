@@ -23,10 +23,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import javax.validation.constraints.Pattern;
 import java.time.Instant;
 import java.util.Collection;
@@ -36,6 +33,7 @@ import java.util.UUID;
 import static java.lang.String.format;
 
 @Entity
+@Table(name = "users")
 public class User implements UserDetails
 {
     public static final User ANONYMOUS = new User(UUID.randomUUID());

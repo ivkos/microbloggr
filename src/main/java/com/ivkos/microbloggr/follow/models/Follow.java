@@ -21,9 +21,11 @@ import com.ivkos.microbloggr.user.models.User;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.time.Instant;
 
 @Entity
+@Table(name = "follows")
 public class Follow
 {
     @EmbeddedId
