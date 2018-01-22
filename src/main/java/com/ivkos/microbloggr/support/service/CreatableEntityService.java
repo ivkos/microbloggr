@@ -14,23 +14,9 @@
  * limitations under the License.
  */
 
-package com.ivkos.microbloggr.support;
+package com.ivkos.microbloggr.support.service;
 
-import javax.persistence.EntityNotFoundException;
-import java.io.Serializable;
-import java.util.List;
-
-public interface CrudService<T, ID extends Serializable>
+public interface CreatableEntityService<T>
 {
     T create(T entity);
-
-    T findById(ID id) throws EntityNotFoundException;
-
-    List<T> findAll();
-
-    T update(T entity);
-
-    void delete(T entity);
-
-    void delete(ID id) throws EntityNotFoundException;
 }

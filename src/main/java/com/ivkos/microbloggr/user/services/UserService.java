@@ -16,13 +16,13 @@
 
 package com.ivkos.microbloggr.user.services;
 
-import com.ivkos.microbloggr.support.CrudService;
+import com.ivkos.microbloggr.support.service.CrudEntityService;
 import com.ivkos.microbloggr.user.models.User;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.UUID;
 
-public interface UserService extends CrudService<User, UUID>
+public interface UserService extends CrudEntityService<User, UUID>
 {
     User create(String email, String password, String vanity);
 
