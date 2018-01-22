@@ -46,7 +46,7 @@ public class PostLikeServiceTest
     @Before
     public void setUp() throws Exception
     {
-        user = userService.createUser("me@ivkos.com", "password", "ivkos");
+        user = userService.create("me@ivkos.com", "password", "ivkos");
         post = postService.createPost(user, TEXT, "Hello world");
     }
 

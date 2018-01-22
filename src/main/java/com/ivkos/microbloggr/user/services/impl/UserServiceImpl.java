@@ -41,13 +41,51 @@ class UserServiceImpl implements UserService
     }
 
     @Override
-    public User createUser(String email, String password, String vanity)
+    public User create(User entity)
     {
-        return createUser(email, password, vanity, null);
+        return repo.save(entity);
     }
 
     @Override
-    public User createUser(String email, String password, String vanity, String name)
+    public User findById(UUID id)
+    {
+        return Optional.ofNullable(repo.findOne(id)).orElseThrow(() -> new EntityNotFoundException("User not found"));
+    }
+
+    @Override
+    public List<User> findAll()
+    {
+        return repo.findAll();
+    }
+
+    @Override
+    public User update(User entity)
+    {
+        findById(entity.getId());
+        return repo.save(entity);
+    }
+
+    @Override
+    public void delete(User entity)
+    {
+        delete(entity.getId());
+    }
+
+    @Override
+    public void delete(UUID id)
+    {
+        if (!repo.exists(id)) throw new EntityNotFoundException("User not found");
+        repo.delete(id);
+    }
+
+    @Override
+    public User create(String email, String password, String vanity)
+    {
+        return create(email, password, vanity, null);
+    }
+
+    @Override
+    public User create(String email, String password, String vanity, String name)
     {
         email = email.trim();
         vanity = vanity.trim();
@@ -55,18 +93,12 @@ class UserServiceImpl implements UserService
         if (isEmailRegistered(email)) throw new EntityExistsException("Email is already registered");
         if (isVanityRegistered(vanity)) throw new EntityExistsException("Username is already taken");
 
-        return repo.save(new User(
+        return create(new User(
             email,
             passwordEncoder.encode(password),
             vanity,
             name
         ));
-    }
-
-    @Override
-    public List<User> findAll()
-    {
-        return repo.findAll();
     }
 
     @Override
@@ -99,20 +131,7 @@ class UserServiceImpl implements UserService
     }
 
     @Override
-    public User findById(UUID id)
-    {
-        return Optional.ofNullable(repo.findOne(id)).orElseThrow(() -> new EntityNotFoundException("User not found"));
-    }
-
-    @Override
-    public void deleteById(UUID id)
-    {
-        if (!repo.exists(id)) throw new EntityNotFoundException("User not found");
-        repo.delete(id);
-    }
-
-    @Override
-    public void disableById(UUID id)
+    public void disable(UUID id)
     {
         User user = Optional.ofNullable(repo.findOne(id))
             .orElseThrow(() -> new EntityNotFoundException("User not found"));

@@ -44,8 +44,8 @@ public class UserServiceTest
     @Test
     public void thatFindAllReturnsTheUsers()
     {
-        userService.createUser("me@ivkos.com", "password", "ivkos", "Ivaylo Stoyanov");
-        userService.createUser("ivaylo@ivkos.com", "password", "ivaylo");
+        userService.create("me@ivkos.com", "password", "ivkos", "Ivaylo Stoyanov");
+        userService.create("ivaylo@ivkos.com", "password", "ivaylo");
 
         List<User> list = userService.findAll();
         assertThat(list.size(), is(greaterThanOrEqualTo(2)));
@@ -54,22 +54,22 @@ public class UserServiceTest
     @Test(expected = EntityExistsException.class)
     public void thatItFailsForExistingEmail()
     {
-        userService.createUser("me@ivkos.com", "password", "ivkos");
-        userService.createUser("me@ivkos.com", "password", "ivkos2");
+        userService.create("me@ivkos.com", "password", "ivkos");
+        userService.create("me@ivkos.com", "password", "ivkos2");
     }
 
     @Test(expected = EntityExistsException.class)
     public void thatItFailsForExistingVanity()
     {
-        userService.createUser("me@ivkos.com", "password", "ivkos");
-        userService.createUser("me2@ivkos.com", "password", "ivkos");
+        userService.create("me@ivkos.com", "password", "ivkos");
+        userService.create("me2@ivkos.com", "password", "ivkos");
     }
 
     @Test
     public void thatUserIsDiscoverableByEmail()
     {
         String email = "me@ivkos.com";
-        userService.createUser(email, "password", "ivkos");
+        userService.create(email, "password", "ivkos");
         assertTrue(userService.isEmailRegistered(email));
 
         User user = userService.findByEmail(email);
@@ -90,7 +90,7 @@ public class UserServiceTest
     public void thatUserIsDiscoverableByVanity()
     {
         String vanity = "ivkos";
-        userService.createUser("me@ivkos.com", "password", vanity);
+        userService.create("me@ivkos.com", "password", vanity);
         assertTrue(userService.isVanityRegistered(vanity));
 
         User user = userService.findByVanity(vanity);
@@ -110,7 +110,7 @@ public class UserServiceTest
     @Test
     public void thatUserIsFoundById()
     {
-        User user = userService.createUser("ivaylo@ivkos.com", "password", "ivaylo");
+        User user = userService.create("ivaylo@ivkos.com", "password", "ivaylo");
         assertNotNull(userService.findById(user.getId()));
     }
 
@@ -124,25 +124,25 @@ public class UserServiceTest
     @Test(expected = EntityNotFoundException.class)
     public void thatUserIsDeleted()
     {
-        User user = userService.createUser("tobedeleted@example.com", "password", "tobedeleted");
+        User user = userService.create("tobedeleted@example.com", "password", "tobedeleted");
         assertNotNull(user);
 
         UUID userId = user.getId();
 
-        userService.deleteById(userId);
+        userService.delete(userId);
         userService.findById(userId);
     }
 
     @Test
     public void thatUserIsDisabled()
     {
-        User user = userService.createUser("tobedeleted@example.com", "password", "tobedeleted");
+        User user = userService.create("tobedeleted@example.com", "password", "tobedeleted");
         assertNotNull(user);
 
         UUID userId = user.getId();
 
         assertTrue(user.isEnabled());
-        userService.disableById(userId);
+        userService.disable(userId);
 
         User user2 = userService.findById(userId);
         assertFalse(user2.isEnabled());

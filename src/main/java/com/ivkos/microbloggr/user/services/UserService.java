@@ -16,30 +16,25 @@
 
 package com.ivkos.microbloggr.user.services;
 
+import com.ivkos.microbloggr.support.CrudService;
 import com.ivkos.microbloggr.user.models.User;
 
-import java.util.List;
+import javax.persistence.EntityNotFoundException;
 import java.util.UUID;
 
-public interface UserService
+public interface UserService extends CrudService<User, UUID>
 {
-    User createUser(String email, String password, String vanity);
+    User create(String email, String password, String vanity);
 
-    User createUser(String email, String password, String vanity, String name);
+    User create(String email, String password, String vanity, String name);
 
-    List<User> findAll();
+    User findByEmail(String email) throws EntityNotFoundException;
 
-    User findByEmail(String email);
-
-    User findByVanity(String vanity);
+    User findByVanity(String vanity) throws EntityNotFoundException;
 
     boolean isEmailRegistered(String email);
 
     boolean isVanityRegistered(String vanity);
 
-    User findById(UUID id);
-
-    void deleteById(UUID id);
-
-    void disableById(UUID id);
+    void disable(UUID id) throws EntityNotFoundException;
 }

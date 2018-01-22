@@ -43,8 +43,8 @@ public class FollowServiceTest
     @Before
     public void setUp() throws Exception
     {
-        user1 = userService.createUser("user1@example.com", "password", "user1");
-        user2 = userService.createUser("user2@example.com", "password", "user2");
+        user1 = userService.create("user1@example.com", "password", "user1");
+        user2 = userService.create("user2@example.com", "password", "user2");
     }
 
     @Test

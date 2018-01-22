@@ -56,7 +56,7 @@ public class PostServiceTest
     @Before
     public void setUp() throws Exception
     {
-        user = userService.createUser("me@ivkos.com", "password", "ivkos");
+        user = userService.create("me@ivkos.com", "password", "ivkos");
         textPost = postService.createPost(user, TEXT, "Hello world");
         imagePost = postService.createPost(user, PICTURE, "https://static.ivkos.com/hi.jpg");
     }
@@ -130,7 +130,7 @@ public class PostServiceTest
     @Test
     public void thatFeedIsNotEmptyWhenTheyHaveFollowees()
     {
-        User user2 = userService.createUser("user2@example.com", "password", "user2");
+        User user2 = userService.create("user2@example.com", "password", "user2");
         followService.create(user, user2);
         postService.createPost(user2, TEXT, "abracadabra");
 

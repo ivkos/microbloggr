@@ -62,7 +62,7 @@ class UserController
     @Secured(Role.ADMIN)
     HttpEntity disableUserById(@PathVariable UUID id)
     {
-        userService.disableById(id);
+        userService.disable(id);
         return ResponseEntity.noContent().build();
     }
 }

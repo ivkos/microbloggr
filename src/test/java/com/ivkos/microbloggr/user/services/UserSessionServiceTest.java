@@ -42,7 +42,7 @@ public class UserSessionServiceTest
     @Test
     public void thatItIsCreated()
     {
-        User user = userService.createUser("me@ivkos.com", "password", "ivkos");
+        User user = userService.create("me@ivkos.com", "password", "ivkos");
         assertNotNull(user);
 
         UserSession session = userSessionService.createSessionForUser(user);
@@ -52,7 +52,7 @@ public class UserSessionServiceTest
     @Test
     public void thatItIsFoundById()
     {
-        User user = userService.createUser("me@ivkos.com", "password", "ivkos");
+        User user = userService.create("me@ivkos.com", "password", "ivkos");
         assertNotNull(user);
 
         UserSession session = userSessionService.createSessionForUser(user);
@@ -74,7 +74,7 @@ public class UserSessionServiceTest
     @Test
     public void thatLastSeenIsUpdated() throws Exception
     {
-        User user = userService.createUser("me@ivkos.com", "password", "ivkos");
+        User user = userService.create("me@ivkos.com", "password", "ivkos");
         assertNotNull(user);
 
         UserSession session = userSessionService.createSessionForUser(user);
