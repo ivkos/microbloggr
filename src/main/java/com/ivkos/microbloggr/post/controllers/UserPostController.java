@@ -22,7 +22,7 @@ import com.ivkos.microbloggr.post.services.PostService;
 import com.ivkos.microbloggr.user.models.User;
 import com.ivkos.microbloggr.user.services.UserService;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -41,13 +41,13 @@ class UserPostController
     }
 
     @GetMapping("/users/{id}/posts")
-    List<Post> getPostsByUser(@RequestParam UUID id)
+    List<Post> getPostsByUser(@PathVariable UUID id)
     {
         return postService.getPostsByUser(userService.findById(id));
     }
 
     @GetMapping("/users/{id}/posts/{type}")
-    List<Post> getPostsByUserByType(@RequestParam UUID userId, @RequestParam PostType type)
+    List<Post> getPostsByUserByType(@PathVariable UUID userId, @PathVariable PostType type)
     {
         User user = userService.findById(userId);
         return postService.getPostsByUserByType(user, type);

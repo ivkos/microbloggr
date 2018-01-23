@@ -44,7 +44,7 @@ class PostController
     }
 
     @GetMapping("/{id}")
-    Post getById(@RequestParam UUID id)
+    Post getById(@PathVariable UUID id)
     {
         return postService.findById(id);
     }
@@ -56,7 +56,7 @@ class PostController
     }
 
     @DeleteMapping("/{id}")
-    ResponseEntity deletePost(@RequestParam UUID id, @AuthenticationPrincipal User actor)
+    ResponseEntity deletePost(@PathVariable UUID id, @AuthenticationPrincipal User actor)
     {
         Post post = postService.findById(id);
 
@@ -70,20 +70,20 @@ class PostController
     }
 
     @GetMapping("/{id}/likes")
-    List<User> getPostLikers(@RequestParam UUID id)
+    List<User> getPostLikers(@PathVariable UUID id)
     {
         return likeService.getLikersOfPost(postService.findById(id));
     }
 
     @PutMapping("/{id}/likes")
-    ResponseEntity likePost(@RequestParam UUID postId, @AuthenticationPrincipal User actor)
+    ResponseEntity likePost(@PathVariable UUID postId, @AuthenticationPrincipal User actor)
     {
         likeService.likePost(actor, postService.findById(postId));
         return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{id}/likes")
-    ResponseEntity unlikePost(@RequestParam UUID postId, @AuthenticationPrincipal User actor)
+    ResponseEntity unlikePost(@PathVariable UUID postId, @AuthenticationPrincipal User actor)
     {
         likeService.unlikePost(actor, postService.findById(postId));
         return ResponseEntity.noContent().build();
