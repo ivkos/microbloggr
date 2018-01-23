@@ -36,6 +36,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 import static org.springframework.http.HttpMethod.GET;
+import static org.springframework.http.HttpMethod.OPTIONS;
 import static org.springframework.http.HttpMethod.POST;
 
 @Configuration
@@ -80,6 +81,7 @@ class SecurityConfig extends WebSecurityConfigurerAdapter
 
         http
             .authorizeRequests()
+            .antMatchers(OPTIONS).permitAll()
             .antMatchers(POST, Endpoint.LOGIN).permitAll()
             .antMatchers(POST, Endpoint.REGISTER).permitAll()
             .antMatchers(POST, Endpoint.CHECK_EMAIL).permitAll()
