@@ -22,12 +22,14 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.GenericFilterBean;
+import org.springframework.web.servlet.HandlerExceptionResolver;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.UUID;
 
@@ -37,11 +39,14 @@ class SessionTokenAuthenticationFilter extends GenericFilterBean
     public static final String HEADER_SESSION_ID = "X-Session-Id";
 
     private final UserSessionService userSessionService;
+    private final HandlerExceptionResolver handlerExceptionResolver;
 
-    SessionTokenAuthenticationFilter(UserSessionService userSessionService)
+    SessionTokenAuthenticationFilter(UserSessionService userSessionService,
+                                     HandlerExceptionResolver handlerExceptionResolver)
     {
         super();
         this.userSessionService = userSessionService;
+        this.handlerExceptionResolver = handlerExceptionResolver;
     }
 
     @Override
@@ -49,25 +54,29 @@ class SessionTokenAuthenticationFilter extends GenericFilterBean
                          ServletResponse res,
                          FilterChain chain) throws IOException, ServletException
     {
-        HttpServletRequest request = (HttpServletRequest) req;
-        String sessionId = request.getHeader(HEADER_SESSION_ID);
+        try {
+            HttpServletRequest request = (HttpServletRequest) req;
+            String sessionId = request.getHeader(HEADER_SESSION_ID);
 
-        if (sessionId != null) {
-            UUID uuid;
-            try {
-                uuid = UUID.fromString(sessionId);
-            } catch (IllegalArgumentException e) {
-                throw new BadCredentialsException("Invalid session id", e);
+            if (sessionId != null) {
+                UUID uuid;
+                try {
+                    uuid = UUID.fromString(sessionId);
+                } catch (IllegalArgumentException e) {
+                    throw new BadCredentialsException("Invalid session id", e);
+                }
+
+                UserSession userSession = userSessionService.findById(uuid);
+                userSession = userSessionService.updateLastSeen(userSession);
+
+                if (userSession.isExpired()) throw new BadCredentialsException("Session expired");
+
+                SecurityContextHolder.getContext().setAuthentication(new UserSessionAuthentication(userSession));
             }
 
-            UserSession userSession = userSessionService.findById(uuid);
-            userSession = userSessionService.updateLastSeen(userSession);
-
-            if (userSession.isExpired()) throw new BadCredentialsException("Session expired");
-
-            SecurityContextHolder.getContext().setAuthentication(new UserSessionAuthentication(userSession));
+            chain.doFilter(req, res);
+        } catch (Exception e) {
+            handlerExceptionResolver.resolveException((HttpServletRequest) req, (HttpServletResponse) res, null, e);
         }
-
-        chain.doFilter(req, res);
     }
 }
