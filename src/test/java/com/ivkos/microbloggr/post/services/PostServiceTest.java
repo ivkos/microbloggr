@@ -17,6 +17,8 @@
 package com.ivkos.microbloggr.post.services;
 
 import com.ivkos.microbloggr.follow.services.FollowService;
+import com.ivkos.microbloggr.picture.Picture;
+import com.ivkos.microbloggr.picture.PictureService;
 import com.ivkos.microbloggr.post.models.Post;
 import com.ivkos.microbloggr.post.models.PostType;
 import com.ivkos.microbloggr.user.models.User;
@@ -27,6 +29,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -48,17 +51,21 @@ public class PostServiceTest
     @Autowired private FollowService followService;
     @Autowired private UserService userService;
     @Autowired private PostService postService;
+    @Autowired private PictureService pictureService;
 
     private User user;
     private Post textPost;
     private Post imagePost;
+    private Picture picture;
 
     @Before
     public void setUp() throws Exception
     {
         user = userService.create("me@ivkos.com", "password", "ivkos");
         textPost = postService.createPost(user, TEXT, "Hello world");
-        imagePost = postService.createPost(user, PICTURE, "https://static.ivkos.com/hi.jpg");
+
+        picture = pictureService.create(new MockMultipartFile("pic.jpg", new byte[] { 0 }));
+        imagePost = postService.createPost(user, PICTURE, picture.getId().toString());
     }
 
     @Test
