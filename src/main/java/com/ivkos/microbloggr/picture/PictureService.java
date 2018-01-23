@@ -19,6 +19,7 @@ package com.ivkos.microbloggr.picture;
 import com.ivkos.microbloggr.support.service.CreatableEntityService;
 import com.ivkos.microbloggr.support.service.DeletableEntityService;
 import com.ivkos.microbloggr.support.service.ReadableEntityService;
+import org.springframework.core.io.Resource;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.UUID;
@@ -29,6 +30,8 @@ public interface PictureService extends
     DeletableEntityService<Picture, UUID>
 {
     Picture create(MultipartFile file);
+
+    Resource readAsResource(Picture picture);
 
     void delete(Picture entity, boolean deleteFromStorage);
 

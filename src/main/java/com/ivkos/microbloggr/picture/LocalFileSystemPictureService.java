@@ -17,11 +17,14 @@
 package com.ivkos.microbloggr.picture;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityNotFoundException;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -66,6 +69,23 @@ class LocalFileSystemPictureService implements PictureService
         } catch (IOException e) {
             actuallyDeleteEntity(picture);
             throw new RuntimeException("Something went wrong while storing this file", e);
+        }
+    }
+
+    @Override
+    public Resource readAsResource(Picture picture)
+    {
+        Path path = getPathByUuid(picture.getId());
+
+        try {
+            Resource resource = new UrlResource(path.toUri());
+            if (!resource.exists() || !resource.isReadable()) {
+                throw new RuntimeException("Cannot read this file");
+            }
+
+            return resource;
+        } catch (MalformedURLException e) {
+            throw new RuntimeException("Cannot read this file", e);
         }
     }
 
