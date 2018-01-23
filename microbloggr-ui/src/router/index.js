@@ -1,5 +1,6 @@
 import Login from '@/components/Login'
 import SignUp from '@/components/SignUp'
+import MeRedirector from '@/components/MeRedirector'
 import Vue from 'vue'
 import Router from 'vue-router'
 
@@ -23,9 +24,8 @@ export default new Router({
 
     {
       path: '/me',
-      redirect: to => {
-        return { path: '/ivkos' }
-      }
+      name: 'MeRedirector',
+      component: MeRedirector
     },
 
     {
