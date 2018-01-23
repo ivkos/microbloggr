@@ -16,6 +16,8 @@
 
 package com.ivkos.microbloggr.picture;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.time.Instant;
 import java.util.UUID;
@@ -32,6 +34,7 @@ public class Picture
     private Instant createdAt = Instant.now();
 
     @Column
+    @JsonIgnore
     private boolean deleted = false;
 
     Picture() {}

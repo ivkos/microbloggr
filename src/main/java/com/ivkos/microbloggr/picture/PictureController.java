@@ -20,6 +20,7 @@ import com.ivkos.microbloggr.support.Role;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
@@ -37,7 +38,7 @@ class PictureController
     @Autowired
     PictureController(PictureService pictureService) {this.pictureService = pictureService;}
 
-    @GetMapping("/")
+    @GetMapping
     @Secured(Role.ADMIN)
     public List<Picture> listAllPictures()
     {
@@ -54,13 +55,17 @@ class PictureController
         return ResponseEntity
             .ok()
             .header(
+                HttpHeaders.CONTENT_TYPE,
+                MediaType.IMAGE_JPEG_VALUE
+            )
+            .header(
                 HttpHeaders.CONTENT_DISPOSITION,
-                "attachment; filename=\"" + resource.getFilename() + "\""
+                "inline; filename=\"" + resource.getFilename() + "\""
             )
             .body(resource);
     }
 
-    @PostMapping("/")
+    @PostMapping
     public Picture upload(@RequestParam("file") MultipartFile file)
     {
         return pictureService.create(file);

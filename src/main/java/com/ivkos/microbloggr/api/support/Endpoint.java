@@ -22,6 +22,7 @@ public final class Endpoint
     public static final String REGISTER = "/register";
     public static final String CHECK_EMAIL = "/check_email";
     public static final String CHECK_VANITY = "/check_vanity";
+    public static final String PICTURE_BY_ID = "/pictures/{id}";
 
     private Endpoint() {}
 }
