@@ -17,6 +17,7 @@
 package com.ivkos.microbloggr.post.services.impl;
 
 import com.ivkos.microbloggr.follow.services.FollowService;
+import com.ivkos.microbloggr.picture.PictureService;
 import com.ivkos.microbloggr.post.models.Post;
 import com.ivkos.microbloggr.post.models.PostType;
 import com.ivkos.microbloggr.post.repositories.PostRepository;
@@ -34,12 +35,16 @@ class PostServiceImpl implements PostService
 {
     private final PostRepository repository;
     private final FollowService followService;
+    private final PictureService pictureService;
 
     @Autowired
-    PostServiceImpl(PostRepository repository, FollowService followService)
+    PostServiceImpl(PostRepository repository,
+                    FollowService followService,
+                    PictureService pictureService)
     {
         this.repository = repository;
         this.followService = followService;
+        this.pictureService = pictureService;
     }
 
     @Override
@@ -74,6 +79,13 @@ class PostServiceImpl implements PostService
     public Post createPost(User author, PostType type, String content)
     {
         Post post = new Post(author, type, content);
+
+        if (type.equals(PostType.PICTURE)) {
+            UUID pictureId = UUID.fromString(content);
+
+            // check if exists
+            pictureService.findById(pictureId);
+        }
 
         return repository.save(post);
     }
