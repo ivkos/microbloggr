@@ -110,4 +110,10 @@ public class UserSession
         if (expiresAt == null) return false;
         return expiresAt.isBefore(Instant.now());
     }
+
+    @Transient
+    public boolean isAdmin()
+    {
+        return user.isAdmin();
+    }
 }
