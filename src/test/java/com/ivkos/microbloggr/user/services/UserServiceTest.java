@@ -52,6 +52,12 @@ public class UserServiceTest
     }
 
     @Test(expected = EntityExistsException.class)
+    public void thatItWillNotAllowMeVanity()
+    {
+        userService.create("me@ivkos.com", "password", "me");
+    }
+
+    @Test(expected = EntityExistsException.class)
     public void thatItFailsForExistingEmail()
     {
         userService.create("me@ivkos.com", "password", "ivkos");

@@ -18,54 +18,54 @@ package com.ivkos.microbloggr.follow.controllers;
 
 import com.ivkos.microbloggr.follow.services.FollowService;
 import com.ivkos.microbloggr.user.models.User;
-import com.ivkos.microbloggr.user.services.UserService;
+import com.ivkos.microbloggr.user.services.UserIdentityResolverService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.UUID;
 
 @RestController
 class FollowController
 {
-    private final UserService userService;
+    private final UserIdentityResolverService userIdentityResolverService;
     private final FollowService followService;
 
     @Autowired
-    FollowController(UserService userService, FollowService followService)
+    FollowController(UserIdentityResolverService userIdentityResolverService,
+                     FollowService followService)
     {
-        this.userService = userService;
+        this.userIdentityResolverService = userIdentityResolverService;
         this.followService = followService;
     }
 
-    @GetMapping("/users/{id}/followers")
-    List<User> getFollowersOfUser(@PathVariable UUID id)
+    @GetMapping("/users/{identity}/followers")
+    List<User> getFollowersOfUser(@PathVariable String identity, @AuthenticationPrincipal User currentUser)
     {
-        User user = userService.findById(id);
+        User user = userIdentityResolverService.resolve(identity, currentUser);
         return followService.getFollowersOfUser(user);
     }
 
-    @GetMapping("/users/{id}/followees")
-    List<User> getFolloweesOfUser(@PathVariable UUID id)
+    @GetMapping("/users/{identity}/followees")
+    List<User> getFolloweesOfUser(@PathVariable String identity, @AuthenticationPrincipal User currentUser)
     {
-        User user = userService.findById(id);
+        User user = userIdentityResolverService.resolve(identity, currentUser);
         return followService.getFolloweesOfUser(user);
     }
 
-    @PutMapping("/users/{id}/followers")
-    ResponseEntity followUser(@PathVariable UUID id, @AuthenticationPrincipal User currentUser)
+    @PutMapping("/users/{identity}/followers")
+    ResponseEntity followUser(@PathVariable String identity, @AuthenticationPrincipal User currentUser)
     {
-        User followee = userService.findById(id);
+        User followee = userIdentityResolverService.resolve(identity, currentUser);
         followService.create(currentUser, followee);
         return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping("/users/{id}/followers")
-    ResponseEntity unfollowUser(@PathVariable UUID id, @AuthenticationPrincipal User currentUser)
+    @DeleteMapping("/users/{identity}/followers")
+    ResponseEntity unfollowUser(@PathVariable String identity, @AuthenticationPrincipal User currentUser)
     {
-        User followee = userService.findById(id);
+        User followee = userIdentityResolverService.resolve(identity, currentUser);
         followService.unfollow(currentUser, followee);
         return ResponseEntity.noContent().build();
     }

@@ -18,11 +18,13 @@ package com.ivkos.microbloggr.user.controllers;
 
 import com.ivkos.microbloggr.support.Role;
 import com.ivkos.microbloggr.user.models.User;
+import com.ivkos.microbloggr.user.services.UserIdentityResolverService;
 import com.ivkos.microbloggr.user.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -33,11 +35,14 @@ import java.util.UUID;
 class UserController
 {
     private final UserService userService;
+    private final UserIdentityResolverService userIdentityResolverService;
 
     @Autowired
-    UserController(UserService userService)
+    UserController(UserService userService,
+                   UserIdentityResolverService userIdentityResolverService)
     {
         this.userService = userService;
+        this.userIdentityResolverService = userIdentityResolverService;
     }
 
     @GetMapping()
@@ -47,15 +52,10 @@ class UserController
         return userService.findAll();
     }
 
-    @GetMapping("/{idOrVanity}")
-    User findByIdOrVanity(@PathVariable String idOrVanity)
+    @GetMapping("/{identity}")
+    User findByIdOrVanity(@PathVariable String identity, @AuthenticationPrincipal User viewer)
     {
-        try {
-            UUID id = UUID.fromString(idOrVanity);
-            return userService.findById(id);
-        } catch (IllegalArgumentException e) {
-            return userService.findByVanity(idOrVanity);
-        }
+        return userIdentityResolverService.resolve(identity, viewer);
     }
 
     @DeleteMapping("/{id}")

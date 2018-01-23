@@ -127,7 +127,8 @@ class UserServiceImpl implements UserService
     public boolean isVanityRegistered(String vanity)
     {
         vanity = vanity.trim();
-        return repo.existsByVanityIgnoreCase(vanity);
+
+        return vanity.equals("me") || repo.existsByVanityIgnoreCase(vanity);
     }
 
     @Override
