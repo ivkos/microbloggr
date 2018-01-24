@@ -17,6 +17,7 @@
 package com.ivkos.microbloggr.user.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.ivkos.microbloggr.picture.Picture;
 import com.ivkos.microbloggr.support.Role;
 import org.hibernate.validator.constraints.Email;
 import org.springframework.security.core.GrantedAuthority;
@@ -70,6 +71,11 @@ public class User implements UserDetails
 
     @Column
     private String name;
+
+    @OneToOne
+    @JoinColumn(name = "picture_id")
+    @JsonIgnore
+    private Picture picture;
 
     User() {}
 
@@ -157,6 +163,23 @@ public class User implements UserDetails
     public String getEmailHash()
     {
         return DigestUtils.md5DigestAsHex(email.trim().toLowerCase().getBytes());
+    }
+
+    public Picture getPicture()
+    {
+        return picture;
+    }
+
+    public User setPicture(Picture picture)
+    {
+        this.picture = picture;
+        return this;
+    }
+
+    @Transient
+    public String getPictureId()
+    {
+        return picture != null ? picture.getId().toString() : null;
     }
 
     //region UserDetails boilerplate

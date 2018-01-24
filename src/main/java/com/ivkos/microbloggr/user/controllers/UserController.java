@@ -16,7 +16,10 @@
 
 package com.ivkos.microbloggr.user.controllers;
 
+import com.ivkos.microbloggr.picture.Picture;
+import com.ivkos.microbloggr.picture.PictureService;
 import com.ivkos.microbloggr.support.Role;
+import com.ivkos.microbloggr.support.forms.request.UserUpdateRequestForm;
 import com.ivkos.microbloggr.user.models.User;
 import com.ivkos.microbloggr.user.services.UserIdentityResolverService;
 import com.ivkos.microbloggr.user.services.UserService;
@@ -25,8 +28,10 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.UUID;
 
@@ -35,14 +40,20 @@ import java.util.UUID;
 class UserController
 {
     private final UserService userService;
+    private final PasswordEncoder passwordEncoder;
     private final UserIdentityResolverService userIdentityResolverService;
+    private final PictureService pictureService;
 
     @Autowired
     UserController(UserService userService,
-                   UserIdentityResolverService userIdentityResolverService)
+                   PasswordEncoder passwordEncoder,
+                   UserIdentityResolverService userIdentityResolverService,
+                   PictureService pictureService)
     {
         this.userService = userService;
+        this.passwordEncoder = passwordEncoder;
         this.userIdentityResolverService = userIdentityResolverService;
+        this.pictureService = pictureService;
     }
 
     @GetMapping()
@@ -64,5 +75,25 @@ class UserController
     {
         userService.disable(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/me")
+    User update(@Valid @RequestBody UserUpdateRequestForm form, @AuthenticationPrincipal User viewer)
+    {
+        // TODO Move to service
+
+        viewer.setName(form.name);
+        if (form.vanity != null) viewer.setVanity(form.vanity);
+        if (form.password != null) viewer.setPassword(passwordEncoder.encode(form.password));
+        if (form.email != null) viewer.setEmail(form.email);
+
+        if (form.pictureId != null) {
+            Picture picture = pictureService.findById(UUID.fromString(form.pictureId));
+            viewer.setPicture(picture);
+        }
+
+        userService.update(viewer);
+
+        return viewer;
     }
 }
