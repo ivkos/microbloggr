@@ -26,6 +26,14 @@
               Settings
             </router-link>
 
+            <template v-if="admin">
+              <sui-divider/>
+              <router-link to="/admin" class="item">
+                <sui-icon name="spy"/>
+                Admin
+              </router-link>
+            </template>
+
             <sui-divider/>
 
             <router-link to="/logout" class="item">
@@ -51,12 +59,14 @@
 
     data() {
       return {
-        auth: false
-      }
-    },
+        get auth() {
+          return AppState.sessionId !== undefined;
+        },
 
-    created() {
-      this.auth = AppState.sessionId !== undefined;
+        get admin() {
+          return AppState.isAdmin;
+        }
+      }
     }
   }
 </script>
