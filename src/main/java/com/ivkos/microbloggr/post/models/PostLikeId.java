@@ -17,6 +17,8 @@
 package com.ivkos.microbloggr.post.models;
 
 import com.ivkos.microbloggr.user.models.User;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.Embeddable;
 import javax.persistence.JoinColumn;
@@ -29,10 +31,12 @@ public class PostLikeId implements Serializable
 {
     @OneToOne
     @JoinColumn(name = "liker_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private User liker;
 
     @OneToOne
     @JoinColumn(name = "post_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Post post;
 
     PostLikeId() {}

@@ -16,9 +16,12 @@
 
 package com.ivkos.microbloggr.post.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.ivkos.microbloggr.picture.Picture;
 import com.ivkos.microbloggr.user.models.User;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import java.time.Instant;
@@ -39,6 +42,7 @@ public class Post
 
     @OneToOne
     @JoinColumn(name = "user_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private User author;
 
     @Column
@@ -46,6 +50,7 @@ public class Post
 
     @OneToOne
     @JoinColumn(name = "picture_id")
+    @JsonIgnore
     private Picture picture;
 
     @Transient
@@ -121,5 +126,11 @@ public class Post
     {
         isLiked = liked;
         return this;
+    }
+
+    @Transient
+    public String getPictureId()
+    {
+        return picture != null ? picture.getId().toString() : null;
     }
 }

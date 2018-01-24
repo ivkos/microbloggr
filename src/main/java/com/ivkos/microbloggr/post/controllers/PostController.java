@@ -52,7 +52,8 @@ class PostController
     @PostMapping
     Post createPost(@Valid @RequestBody CreatePostRequestForm form, @AuthenticationPrincipal User author)
     {
-        return postService.createPost(author, form.content, UUID.fromString(form.pictureId));
+        UUID pictureId = form.pictureId != null ? UUID.fromString(form.pictureId) : null;
+        return postService.createPost(author, form.content, pictureId);
     }
 
     @DeleteMapping("/{id}")

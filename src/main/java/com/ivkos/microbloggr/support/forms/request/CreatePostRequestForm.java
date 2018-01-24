@@ -16,13 +16,9 @@
 
 package com.ivkos.microbloggr.support.forms.request;
 
-import org.hibernate.validator.constraints.NotBlank;
-
 public class CreatePostRequestForm
 {
-    @NotBlank
     public String content;
 
-    @NotBlank
     public String pictureId;
 }

@@ -17,6 +17,8 @@
 package com.ivkos.microbloggr.follow.models;
 
 import com.ivkos.microbloggr.user.models.User;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.Embeddable;
 import javax.persistence.JoinColumn;
@@ -29,10 +31,12 @@ public class FollowId implements Serializable
 {
     @OneToOne
     @JoinColumn(name = "follower_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private User follower;
 
     @OneToOne
     @JoinColumn(name = "followee_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private User followee;
 
     FollowId() { }
