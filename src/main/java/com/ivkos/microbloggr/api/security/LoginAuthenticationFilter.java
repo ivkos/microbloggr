@@ -96,6 +96,7 @@ class LoginAuthenticationFilter extends AbstractAuthenticationProcessingFilter i
             .setAuthentication(auth);
 
         response.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_UTF8_VALUE);
+        response.setHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, "*");
         mapper.writeValue(response.getWriter(), session);
     }
 
