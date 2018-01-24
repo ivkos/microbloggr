@@ -2,6 +2,7 @@ import Login from '@/components/Login'
 import MeRedirector from '@/components/MeRedirector'
 import SignUp from '@/components/SignUp'
 import UserProfile from '@/components/UserProfile'
+import Feed from '@/components/Feed'
 import Vue from 'vue'
 import Router from 'vue-router'
 import AppState from "../support/AppState";
@@ -49,6 +50,19 @@ const router = new Router({
       name: 'UserProfile',
       component: UserProfile,
       props: true
+    },
+
+    {
+      path: '/:vanity/posts/:postId',
+      name: 'UserProfileSinglePost',
+      component: UserProfile,
+      props: true
+    },
+
+    {
+      path: '/',
+      name: 'Feed',
+      component: Feed
     }
   ]
 });

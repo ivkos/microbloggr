@@ -1,91 +1,104 @@
 <template>
-  <sui-grid>
+  <div class="ui two column grid">
     <catch-async-error :method="getUser">
       <div v-if="getUser.rejectedWith">
         Could not load user due to an error. Details: {{getUser.rejectedWith.message}}
       </div>
     </catch-async-error>
 
-    <sui-grid-row>
-      <sui-grid-column :width="11">
+    <div class="ui eleven centered column">
+      <template v-if="!singlePost">
         <h2>Posts</h2>
+
         <template v-if="getPosts.resolvedWithEmpty">
           <div class="ui stacked segment">This user hasn't posted anything.</div>
         </template>
 
-        <template v-if="getPosts.isResolved">
+        <template v-if="getPosts.resolvedWithSomething">
+          <div class="ui cards">
+            <post-card v-for="p in posts" :key="p.id" :post="p"/>
+          </div>
         </template>
+      </template>
 
-        <div class="ui inverted dimmer" v-bind:class="{ active: getPosts.isPending }">
-          <div class="ui loader"></div>
-        </div>
-      </sui-grid-column>
+      <template v-if="singlePost">
+        <post-card :post="post"/>
+      </template>
 
-      <sui-grid-column :width="5" v-if="getUser.isResolved">
-        <sui-card class="fluid">
-          <sui-image wrapped :src="'https://www.gravatar.com/avatar/' + user.emailHash + '?s=640&d=retro'"/>
+      <div class="ui inverted dimmer" v-bind:class="{ active: getPosts.isPending || getSinglePost.isPending }">
+        <div class="ui loader"></div>
+      </div>
+    </div>
 
-          <sui-card-content>
-            <sui-card-header>{{ user.name || user.vanity }}</sui-card-header>
+    <sui-grid-column :width="5" v-if="getUser.isResolved">
+      <sui-card class="fluid">
+        <sui-image wrapped :src="'https://www.gravatar.com/avatar/' + user.emailHash + '?s=640&d=retro'"/>
 
-            <sui-card-meta>
-              <router-link :to="{ name: 'UserProfile', params: { vanity: user.vanity }}">@{{ user.vanity }}
-              </router-link>
-            </sui-card-meta>
-          </sui-card-content>
+        <sui-card-content>
+          <sui-card-header>{{ user.name || user.vanity }}</sui-card-header>
 
-          <sui-card-content extra>
+          <sui-card-meta>
+            <router-link :to="{ name: 'UserProfile', params: { vanity: user.vanity }}">@{{ user.vanity }}
+            </router-link>
+          </sui-card-meta>
+        </sui-card-content>
+
+        <sui-card-content extra>
             <span>
               <sui-icon name="comment outline"/>{{ posts.length }} post{{ posts.length === 1 ? '' : 's' }}
             </span>
 
-            <span slot="right">
+          <span slot="right">
               <sui-icon name="user outline"/>{{ followersCount }} follower{{ followersCount === 1 ? '' : 's' }}
             </span>
-          </sui-card-content>
+        </sui-card-content>
 
-          <template v-if="!isCurrentUser">
-            <template v-if="isFollowed">
-              <div class="ui animated vertical bottom attached basic primary button"
-                   @click="toggleFollow">
-                <div class="visible content">
-                  <sui-icon name="checkmark"/>
-                  Following
-                </div>
+        <template v-if="!isCurrentUser">
+          <template v-if="isFollowed">
+            <div class="ui animated vertical bottom attached basic primary button"
+                 @click="toggleFollow">
+              <div class="visible content">
+                <sui-icon name="checkmark"/>
+                Following
+              </div>
 
-                <div class="hidden content">
-                  <sui-icon name="remove user"/>
-                  Unfollow
-                </div>
+              <div class="hidden content">
+                <sui-icon name="remove user"/>
+                Unfollow
               </div>
-            </template>
-            <template v-else>
-              <div class="ui bottom attached primary button" @click="toggleFollow">
-                <sui-icon name="add user"/>
-                Follow
-              </div>
-            </template>
+            </div>
           </template>
+          <template v-else>
+            <div class="ui bottom attached primary button" @click="toggleFollow">
+              <sui-icon name="add user"/>
+              Follow
+            </div>
+          </template>
+        </template>
 
-          <div class="ui inverted dimmer" v-bind:class="{ active: isLoading }">
-            <div class="ui loader"></div>
-          </div>
-        </sui-card>
-      </sui-grid-column>
-    </sui-grid-row>
-  </sui-grid>
+        <div class="ui inverted dimmer" v-bind:class="{ active: isLoading }">
+          <div class="ui loader"></div>
+        </div>
+      </sui-card>
+    </sui-grid-column>
+  </div>
 </template>
 
 <script>
   import AppState from "../support/AppState";
   import { HTTP } from "../support/http-common";
+  import PostCard from "./PostCard";
 
   export default {
+    components: { PostCard },
     name: 'UserProfile',
-    props: ['vanity'],
+    props: ['vanity', 'postId'],
 
     data() {
       return {
+        singlePost: false,
+        actualPromise: undefined,
+        actualAction: undefined,
         isLoading: true,
 
         user: undefined,
@@ -95,7 +108,8 @@
         followersCount: 0,
         isFollowed: undefined,
 
-        posts: []
+        posts: [],
+        post: undefined
       }
     },
 
@@ -124,7 +138,17 @@
           .then(res => res.data)
           .then(posts => {
             this.posts = posts;
+            return posts;
           });
+      },
+
+      getSinglePost() {
+        return HTTP.get(`/posts/${this.postId}`)
+          .then(res => res.data)
+          .then(post => {
+            this.post = post;
+            return post;
+          })
       }
     },
 
@@ -136,18 +160,31 @@
         this.isFollowed = !this.isFollowed;
 
         return HTTP[verb](`/users/${this.user.id}/followers`);
+      },
+
+      initialize() {
+        this.getUser.execute();
+
+        this.singlePost = this.postId !== undefined;
+        this.actualPromise = this.singlePost ? this.getSinglePost.execute() : this.getPosts.execute();
+
+        Promise.all([
+          this.getFollowers.execute(),
+          this.actualPromise
+        ]).finally(() => {
+          this.isLoading = false;
+        });
       }
     },
 
     created() {
-      this.getUser.execute();
+      this.initialize();
+    },
 
-      Promise.all([
-        this.getFollowers.execute(),
-        this.getPosts.execute()
-      ]).finally(() => {
-        this.isLoading = false;
-      });
+    watch: {
+      postId(val) {
+        this.initialize();
+      }
     }
   }
 </script>

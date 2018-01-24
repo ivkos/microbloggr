@@ -5,10 +5,12 @@ import App from './App'
 import router from './router'
 import AsyncMethods from 'vue-async-methods'
 import VeeValidate from 'vee-validate';
+import VueMoment from "vue-moment";
 import SemanticUiVue from 'semantic-ui-vue'
 import 'semantic-ui-css/semantic.min.css'
 
 Vue.use(AsyncMethods);
+Vue.use(VueMoment);
 Vue.use(VeeValidate, {
   delay: 333
 });
