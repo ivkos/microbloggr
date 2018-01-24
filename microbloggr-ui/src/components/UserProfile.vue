@@ -20,7 +20,7 @@
             <sui-card-header>{{ user.name || user.vanity }}</sui-card-header>
 
             <sui-card-meta>
-              <router-link :to="{ name: 'UserProfile', params: { vanity: vanity }}">@{{ user.vanity }}</router-link>
+              <router-link :to="{ name: 'UserProfile', params: { vanity: user.vanity }}">@{{ user.vanity }}</router-link>
             </sui-card-meta>
           </sui-card-content>
 
