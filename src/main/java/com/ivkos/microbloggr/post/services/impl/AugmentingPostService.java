@@ -23,6 +23,7 @@ import com.ivkos.microbloggr.post.services.PostService;
 import com.ivkos.microbloggr.user.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -115,8 +116,11 @@ class AugmentingPostService implements PostService
 
     private Post augment(Post post)
     {
+        User principal = (User) getPrincipal();
+        if (principal == null) return post;
+
         long likes = postLikeService.getLikeCountOfPost(post);
-        boolean isLiked = postLikeService.doesLike((User) getPrincipal(), post);
+        boolean isLiked = postLikeService.doesLike(principal, post);
 
         post.setLikes(likes);
         post.setLiked(isLiked);
@@ -126,6 +130,7 @@ class AugmentingPostService implements PostService
 
     private Object getPrincipal()
     {
-        return SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return authentication != null ? authentication.getPrincipal() : null;
     }
 }
