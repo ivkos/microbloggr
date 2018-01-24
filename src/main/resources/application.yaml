@@ -24,6 +24,10 @@ spring:
     serialization:
       write_dates_as_timestamps: false
     default-property-inclusion: non_null
+  http:
+    multipart:
+      max-file-size: 25MB
+      max-request-size: 50MB
 
 server:
   port: 8000
