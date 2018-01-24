@@ -15,11 +15,19 @@ const AppState = {
     this.set('userId', val);
   },
 
-  get (prop) {
+  get isAdmin() {
+    return this.get('isAdmin') === "true";
+  },
+
+  set isAdmin(val) {
+    this.set('isAdmin', val);
+  },
+
+  get(prop) {
     return localStorage.getItem(prop) || undefined;
   },
 
-  set (prop, val) {
+  set(prop, val) {
     localStorage.setItem(prop, val);
   },
 
