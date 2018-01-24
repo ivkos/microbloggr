@@ -25,6 +25,7 @@ import com.ivkos.microbloggr.post.services.PostService;
 import com.ivkos.microbloggr.user.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.*;
@@ -55,6 +56,7 @@ class PostServiceImpl implements PostService
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Post> getPostsByUser(User user)
     {
         return repository.findAllByAuthorOrderByCreatedAtDesc(user)
@@ -62,6 +64,7 @@ class PostServiceImpl implements PostService
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Post> getPostsByUserByType(User user, PostType type)
     {
         return repository.findAllByAuthorAndTypeOrderByCreatedAtDesc(user, type)
@@ -69,6 +72,7 @@ class PostServiceImpl implements PostService
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Post> getPostsByMultipleUsers(Collection<User> users)
     {
         return repository.findAllByAuthorInOrderByCreatedAtDesc(users)
