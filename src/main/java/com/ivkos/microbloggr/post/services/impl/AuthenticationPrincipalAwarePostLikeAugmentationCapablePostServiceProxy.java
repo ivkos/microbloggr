@@ -34,13 +34,13 @@ import java.util.stream.Collectors;
 
 @Primary
 @Service
-class AugmentingPostService implements PostService
+class AuthenticationPrincipalAwarePostLikeAugmentationCapablePostServiceProxy implements PostService
 {
     private final PostService postService;
     private final PostLikeService postLikeService;
 
     @Autowired
-    AugmentingPostService(PostService postService, PostLikeService postLikeService)
+    AuthenticationPrincipalAwarePostLikeAugmentationCapablePostServiceProxy(PostService postService, PostLikeService postLikeService)
     {
         this.postService = postService;
         this.postLikeService = postLikeService;
