@@ -105,6 +105,7 @@ class LoginAuthenticationFilter extends AbstractAuthenticationProcessingFilter i
                                         HttpServletResponse response,
                                         AuthenticationException exception)
     {
+        response.setHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, "*");
         handlerExceptionResolver.resolveException(request, response, null, exception);
     }
 }
