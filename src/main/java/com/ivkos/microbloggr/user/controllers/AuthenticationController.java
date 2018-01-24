@@ -48,7 +48,7 @@ class AuthenticationController
     @PostMapping(Endpoint.REGISTER)
     UserSession register(@Valid @RequestBody RegistrationRequestForm form)
     {
-        User user = userService.create(form.email, form.password, form.vanity);
+        User user = userService.create(form.email, form.password, form.vanity, form.name);
         return userSessionService.createSessionForUser(user);
     }
 
