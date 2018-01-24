@@ -31,16 +31,21 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import javax.validation.Validator;
 
 @RestController
 class AuthenticationController
 {
+    private final Validator validator;
     private final UserService userService;
     private final UserSessionService userSessionService;
 
     @Autowired
-    AuthenticationController(UserService userService, UserSessionService userSessionService)
+    AuthenticationController(Validator validator,
+                             UserService userService,
+                             UserSessionService userSessionService)
     {
+        this.validator = validator;
         this.userService = userService;
         this.userSessionService = userSessionService;
     }
@@ -53,15 +58,19 @@ class AuthenticationController
     }
 
     @PostMapping(Endpoint.CHECK_EMAIL)
-    AvailabilityResponse checkEmail(@Valid @RequestBody CheckEmailRequestForm form)
+    AvailabilityResponse checkEmail(@RequestBody CheckEmailRequestForm form)
     {
+        if (!validator.validate(form).isEmpty()) return new AvailabilityResponse(false);
+
         boolean available = !userService.isEmailRegistered(form.email);
         return new AvailabilityResponse(available);
     }
 
     @PostMapping(Endpoint.CHECK_VANITY)
-    AvailabilityResponse checkVanity(@Valid @RequestBody CheckVanityRequestForm form)
+    AvailabilityResponse checkVanity(@RequestBody CheckVanityRequestForm form)
     {
+        if (!validator.validate(form).isEmpty()) return new AvailabilityResponse(false);
+
         boolean available = !userService.isVanityRegistered(form.vanity);
         return new AvailabilityResponse(available);
     }

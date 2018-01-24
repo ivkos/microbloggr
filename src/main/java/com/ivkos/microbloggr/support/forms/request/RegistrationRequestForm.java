@@ -26,9 +26,11 @@ public class RegistrationRequestForm
 {
     public String name;
 
+    @NotBlank
     @Pattern(regexp = User.REGEX_VANITY)
     public String vanity;
 
+    @NotBlank
     @Email
     public String email;
 
