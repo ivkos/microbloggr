@@ -27,27 +27,28 @@ const router = new Router({
     {
       path: '/me',
       name: 'MeRedirector',
-      component: MeRedirector,
+      component: MeRedirector
     },
 
     {
       path: '/logout',
       name: 'LogOut',
-      redirect: to => {
-        return { path: '/login' }
-      },
+      beforeEnter: (to, from, next) => {
+        AppState.clear();
+        next("/login");
+      }
     },
 
     {
       path: '/:vanity/:post',
-      name: 'Post',
+      name: 'Post'
     },
 
     {
       path: '/:vanity',
       name: 'UserProfile',
       component: UserProfile,
-      props: true,
+      props: true
     }
   ]
 });
