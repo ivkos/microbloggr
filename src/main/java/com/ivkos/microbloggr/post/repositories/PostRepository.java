@@ -17,7 +17,6 @@
 package com.ivkos.microbloggr.post.repositories;
 
 import com.ivkos.microbloggr.post.models.Post;
-import com.ivkos.microbloggr.post.models.PostType;
 import com.ivkos.microbloggr.user.models.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -28,10 +27,6 @@ import java.util.stream.Stream;
 public interface PostRepository extends JpaRepository<Post, UUID>
 {
     Stream<Post> findAllByAuthorOrderByCreatedAtDesc(User author);
-
-    Stream<Post> findAllByTypeOrderByCreatedAtDesc(PostType type);
-
-    Stream<Post> findAllByAuthorAndTypeOrderByCreatedAtDesc(User author, PostType type);
 
     Stream<Post> findAllByAuthorInOrderByCreatedAtDesc(Collection<User> authors);
 }

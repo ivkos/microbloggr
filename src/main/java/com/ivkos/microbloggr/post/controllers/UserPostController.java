@@ -17,7 +17,6 @@
 package com.ivkos.microbloggr.post.controllers;
 
 import com.ivkos.microbloggr.post.models.Post;
-import com.ivkos.microbloggr.post.models.PostType;
 import com.ivkos.microbloggr.post.services.PostService;
 import com.ivkos.microbloggr.user.models.User;
 import com.ivkos.microbloggr.user.services.UserIdentityResolverService;
@@ -46,13 +45,5 @@ class UserPostController
     {
         User user = userIdentityResolverService.resolve(identity, viewer);
         return postService.getPostsByUser(user);
-    }
-
-    @GetMapping("/users/{identity}/posts/{type}")
-    List<Post> getPostsByUserByType(@PathVariable String identity, @PathVariable PostType type,
-                                    @AuthenticationPrincipal User viewer)
-    {
-        User user = userIdentityResolverService.resolve(identity, viewer);
-        return postService.getPostsByUserByType(user, type);
     }
 }

@@ -52,7 +52,7 @@ class PostController
     @PostMapping
     Post createPost(@Valid @RequestBody CreatePostRequestForm form, @AuthenticationPrincipal User author)
     {
-        return postService.createPost(author, form.type, form.content);
+        return postService.createPost(author, form.content, UUID.fromString(form.pictureId));
     }
 
     @DeleteMapping("/{id}")

@@ -17,6 +17,7 @@
 package com.ivkos.microbloggr.post.models;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.ivkos.microbloggr.picture.Picture;
 import com.ivkos.microbloggr.user.models.User;
 
 import javax.persistence.*;
@@ -41,10 +42,11 @@ public class Post
     private User author;
 
     @Column
-    private PostType type;
-
-    @Column
     private String content;
+
+    @OneToOne
+    @JoinColumn(name = "picture_id")
+    private Picture picture;
 
     @Transient
     private Long likes;
@@ -54,11 +56,23 @@ public class Post
 
     Post() {}
 
-    public Post(User author, PostType type, String content)
+    public Post(User author, String content)
     {
         this.author = author;
-        this.type = type;
         this.content = content;
+    }
+
+    public Post(User author, Picture picture)
+    {
+        this.author = author;
+        this.picture = picture;
+    }
+
+    public Post(User author, String content, Picture picture)
+    {
+        this.author = author;
+        this.content = content;
+        this.picture = picture;
     }
 
     public UUID getId()
@@ -74,11 +88,6 @@ public class Post
     public User getAuthor()
     {
         return author;
-    }
-
-    public PostType getType()
-    {
-        return type;
     }
 
     public String getContent()

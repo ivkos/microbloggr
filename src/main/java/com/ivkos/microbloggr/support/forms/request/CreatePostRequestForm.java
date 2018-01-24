@@ -16,16 +16,13 @@
 
 package com.ivkos.microbloggr.support.forms.request;
 
-import com.ivkos.microbloggr.post.models.PostType;
 import org.hibernate.validator.constraints.NotBlank;
-
-import javax.validation.Valid;
 
 public class CreatePostRequestForm
 {
-    @Valid
-    public PostType type;
-
     @NotBlank
     public String content;
+
+    @NotBlank
+    public String pictureId;
 }

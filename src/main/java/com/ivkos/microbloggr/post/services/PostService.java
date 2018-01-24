@@ -17,7 +17,6 @@
 package com.ivkos.microbloggr.post.services;
 
 import com.ivkos.microbloggr.post.models.Post;
-import com.ivkos.microbloggr.post.models.PostType;
 import com.ivkos.microbloggr.user.models.User;
 
 import java.util.Collection;
@@ -30,11 +29,9 @@ public interface PostService
 
     List<Post> getPostsByUser(User user);
 
-    List<Post> getPostsByUserByType(User user, PostType type);
-
     List<Post> getPostsByMultipleUsers(Collection<User> users);
 
-    Post createPost(User author, PostType type, String content);
+    Post createPost(User author, String content, UUID pictureId);
 
     Post updatePost(Post post);
 

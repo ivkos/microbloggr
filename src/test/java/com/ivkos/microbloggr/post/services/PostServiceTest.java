@@ -20,10 +20,8 @@ import com.ivkos.microbloggr.follow.services.FollowService;
 import com.ivkos.microbloggr.picture.Picture;
 import com.ivkos.microbloggr.picture.PictureService;
 import com.ivkos.microbloggr.post.models.Post;
-import com.ivkos.microbloggr.post.models.PostType;
 import com.ivkos.microbloggr.user.models.User;
 import com.ivkos.microbloggr.user.services.UserService;
-import org.assertj.core.api.Condition;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -38,8 +36,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
-import static com.ivkos.microbloggr.post.models.PostType.PICTURE;
-import static com.ivkos.microbloggr.post.models.PostType.TEXT;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -62,10 +58,10 @@ public class PostServiceTest
     public void setUp() throws Exception
     {
         user = userService.create("me@ivkos.com", "password", "ivkos");
-        textPost = postService.createPost(user, TEXT, "Hello world");
+        textPost = postService.createPost(user, "Hello world", null);
 
         picture = pictureService.create(new MockMultipartFile("pic.jpg", new byte[] { 0 }));
-        imagePost = postService.createPost(user, PICTURE, picture.getId().toString());
+        imagePost = postService.createPost(user, "Some text", picture.getId());
     }
 
     @Test
@@ -86,18 +82,6 @@ public class PostServiceTest
     {
         List<Post> posts = postService.getPostsByUser(user);
         assertThat(posts).isNotEmpty();
-    }
-
-    @Test
-    public void thatItWillFindPostsByUserByType()
-    {
-        List<Post> textPosts = postService.getPostsByUserByType(user, TEXT);
-        assertThat(textPosts).isNotEmpty();
-        assertThat(textPosts).extracting(Post::getType).are(ofType(TEXT));
-
-        List<Post> imagePosts = postService.getPostsByUserByType(user, PICTURE);
-        assertThat(imagePosts).isNotEmpty();
-        assertThat(imagePosts).extracting(Post::getType).are(ofType(PICTURE));
     }
 
     @Test
@@ -125,21 +109,11 @@ public class PostServiceTest
     }
 
     @Test
-    public void thatFeedIsEmptyWhenNoFollowees()
-    {
-        List<User> followees = followService.getFolloweesOfUser(user);
-        assertThat(followees).isEmpty();
-
-        List<Post> feed = postService.getFeedForUser(user);
-        assertThat(feed).isEmpty();
-    }
-
-    @Test
     public void thatFeedIsNotEmptyWhenTheyHaveFollowees()
     {
         User user2 = userService.create("user2@example.com", "password", "user2");
         followService.create(user, user2);
-        postService.createPost(user2, TEXT, "abracadabra");
+        postService.createPost(user2, "abracadabra", null);
 
         List<Post> feed = postService.getFeedForUser(user);
         assertThat(feed).isNotEmpty();
@@ -152,17 +126,5 @@ public class PostServiceTest
         Post updatedPost = postService.updatePost(textPost.setContent(newContent));
 
         assertThat(updatedPost.getContent()).isEqualTo(newContent);
-    }
-
-    private static Condition<PostType> ofType(PostType type)
-    {
-        return new Condition<PostType>()
-        {
-            @Override
-            public boolean matches(PostType value)
-            {
-                return type.equals(value);
-            }
-        };
     }
 }

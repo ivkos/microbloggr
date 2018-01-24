@@ -28,7 +28,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
-import static com.ivkos.microbloggr.post.models.PostType.TEXT;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringRunner.class)
@@ -47,7 +46,7 @@ public class PostLikeServiceTest
     public void setUp() throws Exception
     {
         user = userService.create("me@ivkos.com", "password", "ivkos");
-        post = postService.createPost(user, TEXT, "Hello world");
+        post = postService.createPost(user, "Hello world", null);
     }
 
     @Test

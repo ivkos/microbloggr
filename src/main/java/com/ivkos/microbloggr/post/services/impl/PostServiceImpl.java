@@ -17,9 +17,9 @@
 package com.ivkos.microbloggr.post.services.impl;
 
 import com.ivkos.microbloggr.follow.services.FollowService;
+import com.ivkos.microbloggr.picture.Picture;
 import com.ivkos.microbloggr.picture.PictureService;
 import com.ivkos.microbloggr.post.models.Post;
-import com.ivkos.microbloggr.post.models.PostType;
 import com.ivkos.microbloggr.post.repositories.PostRepository;
 import com.ivkos.microbloggr.post.services.PostService;
 import com.ivkos.microbloggr.user.models.User;
@@ -65,14 +65,6 @@ class PostServiceImpl implements PostService
 
     @Override
     @Transactional(readOnly = true)
-    public List<Post> getPostsByUserByType(User user, PostType type)
-    {
-        return repository.findAllByAuthorAndTypeOrderByCreatedAtDesc(user, type)
-            .collect(Collectors.toList());
-    }
-
-    @Override
-    @Transactional(readOnly = true)
     public List<Post> getPostsByMultipleUsers(Collection<User> users)
     {
         return repository.findAllByAuthorInOrderByCreatedAtDesc(users)
@@ -80,16 +72,11 @@ class PostServiceImpl implements PostService
     }
 
     @Override
-    public Post createPost(User author, PostType type, String content)
+    public Post createPost(User author, String content, UUID pictureId)
     {
-        Post post = new Post(author, type, content);
+        Picture picture = pictureId != null ? pictureService.findById(pictureId) : null;
 
-        if (type.equals(PostType.PICTURE)) {
-            UUID pictureId = UUID.fromString(content);
-
-            // check if exists
-            pictureService.findById(pictureId);
-        }
+        Post post = new Post(author, content, picture);
 
         return repository.save(post);
     }
@@ -114,10 +101,11 @@ class PostServiceImpl implements PostService
     @Override
     public List<Post> getFeedForUser(User user)
     {
-        List<User> followees = followService.getFolloweesOfUser(user);
+        List<User> users = new LinkedList<>();
 
-        if (followees.isEmpty()) return Collections.emptyList();
+        users.add(user);
+        users.addAll(followService.getFolloweesOfUser(user));
 
-        return getPostsByMultipleUsers(followees);
+        return getPostsByMultipleUsers(users);
     }
 }

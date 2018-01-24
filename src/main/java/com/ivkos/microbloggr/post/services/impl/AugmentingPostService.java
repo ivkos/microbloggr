@@ -17,7 +17,6 @@
 package com.ivkos.microbloggr.post.services.impl;
 
 import com.ivkos.microbloggr.post.models.Post;
-import com.ivkos.microbloggr.post.models.PostType;
 import com.ivkos.microbloggr.post.services.PostLikeService;
 import com.ivkos.microbloggr.post.services.PostService;
 import com.ivkos.microbloggr.user.models.User;
@@ -66,16 +65,6 @@ class AugmentingPostService implements PostService
 
     @Override
     @Transactional(readOnly = true)
-    public List<Post> getPostsByUserByType(User user, PostType type)
-    {
-        return postService.getPostsByUserByType(user, type)
-            .stream()
-            .map(this::augment)
-            .collect(Collectors.toList());
-    }
-
-    @Override
-    @Transactional(readOnly = true)
     public List<Post> getPostsByMultipleUsers(Collection<User> users)
     {
         return postService.getPostsByMultipleUsers(users)
@@ -86,9 +75,9 @@ class AugmentingPostService implements PostService
 
     @Override
     @Transactional
-    public Post createPost(User author, PostType type, String content)
+    public Post createPost(User author, String content, UUID pictureId)
     {
-        return augment(postService.createPost(author, type, content));
+        return augment(postService.createPost(author, content, pictureId));
     }
 
     @Override
