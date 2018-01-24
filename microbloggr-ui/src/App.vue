@@ -9,11 +9,11 @@
 
         <div class="ui simple dropdown item right" v-if="auth">
           <sui-image
-            src="https://avatars0.githubusercontent.com/u/991028"
+            :src="'https://www.gravatar.com/avatar/' + user.emailHash + '?s=64&d=retro'"
             class="spaced avatar"
           />
 
-          <span>ivkos</span>
+          <span>{{ user.name || user.vanity }}</span>
           <i class="dropdown icon"></i>
 
           <sui-menu>
@@ -65,6 +65,10 @@
 
         get admin() {
           return AppState.isAdmin;
+        },
+
+        get user() {
+          return AppState.user;
         }
       }
     }

@@ -105,7 +105,7 @@
           .then(res => res.data)
           .then(user => {
             this.user = user;
-            this.isCurrentUser = AppState.userId === user.id;
+            this.isCurrentUser = AppState.user.id === user.id;
           })
       },
 
@@ -115,7 +115,7 @@
           .then(followers => {
             this.followers = followers;
             this.followersCount = followers.length;
-            this.isFollowed = followers.some(f => f.id === AppState.userId);
+            this.isFollowed = followers.some(f => f.id === AppState.user.id);
           });
       },
 

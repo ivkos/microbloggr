@@ -15,6 +15,15 @@ const AppState = {
     this.set('userId', val);
   },
 
+  get user() {
+    const data = this.get('user');
+    return data ? JSON.parse(data) : undefined;
+  },
+
+  set user(val) {
+    this.set('user', JSON.stringify(val));
+  },
+
   get isAdmin() {
     return this.get('isAdmin') === "true";
   },

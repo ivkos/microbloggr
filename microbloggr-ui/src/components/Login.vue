@@ -72,7 +72,7 @@
             return HTTP.get("/users/me")
               .then(res => res.data)
               .then(user => {
-                AppState.userId = user.id;
+                AppState.user = user;
               })
           })
           .then(() => {
