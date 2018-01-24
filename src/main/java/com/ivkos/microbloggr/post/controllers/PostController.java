@@ -49,7 +49,7 @@ class PostController
         return postService.findById(id);
     }
 
-    @PostMapping("/")
+    @PostMapping
     Post createPost(@Valid @RequestBody CreatePostRequestForm form, @AuthenticationPrincipal User author)
     {
         return postService.createPost(author, form.type, form.content);
@@ -76,16 +76,16 @@ class PostController
     }
 
     @PutMapping("/{id}/likes")
-    ResponseEntity likePost(@PathVariable UUID postId, @AuthenticationPrincipal User actor)
+    ResponseEntity likePost(@PathVariable UUID id, @AuthenticationPrincipal User actor)
     {
-        likeService.likePost(actor, postService.findById(postId));
+        likeService.likePost(actor, postService.findById(id));
         return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{id}/likes")
-    ResponseEntity unlikePost(@PathVariable UUID postId, @AuthenticationPrincipal User actor)
+    ResponseEntity unlikePost(@PathVariable UUID id, @AuthenticationPrincipal User actor)
     {
-        likeService.unlikePost(actor, postService.findById(postId));
+        likeService.unlikePost(actor, postService.findById(id));
         return ResponseEntity.noContent().build();
     }
 }

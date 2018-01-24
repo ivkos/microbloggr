@@ -16,6 +16,7 @@
 
 package com.ivkos.microbloggr.post.models;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.ivkos.microbloggr.user.models.User;
 
 import javax.persistence.*;
@@ -26,6 +27,7 @@ import static java.time.Instant.now;
 
 @Entity
 @Table(name = "posts")
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 public class Post
 {
     @Id
@@ -43,6 +45,12 @@ public class Post
 
     @Column
     private String content;
+
+    @Transient
+    private Long likes;
+
+    @Transient
+    private Boolean isLiked;
 
     Post() {}
 
@@ -81,6 +89,28 @@ public class Post
     public Post setContent(String content)
     {
         this.content = content;
+        return this;
+    }
+
+    public Long getLikes()
+    {
+        return likes;
+    }
+
+    public Post setLikes(Long likes)
+    {
+        this.likes = likes;
+        return this;
+    }
+
+    public Boolean getLiked()
+    {
+        return isLiked;
+    }
+
+    public Post setLiked(Boolean liked)
+    {
+        isLiked = liked;
         return this;
     }
 }
