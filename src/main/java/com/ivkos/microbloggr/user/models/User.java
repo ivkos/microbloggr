@@ -22,6 +22,7 @@ import org.hibernate.validator.constraints.Email;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.util.DigestUtils;
 
 import javax.persistence.*;
 import javax.validation.constraints.Pattern;
@@ -150,6 +151,12 @@ public class User implements UserDetails
     public String toString()
     {
         return format("[@%s] %s <%s>", vanity, name, email);
+    }
+
+    @Transient
+    public String getEmailHash()
+    {
+        return DigestUtils.md5DigestAsHex(email.trim().toLowerCase().getBytes());
     }
 
     //region UserDetails boilerplate
