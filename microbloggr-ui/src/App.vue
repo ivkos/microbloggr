@@ -9,7 +9,7 @@
 
         <div class="ui simple dropdown item right" v-if="auth">
           <sui-image
-            :src="'https://www.gravatar.com/avatar/' + user.emailHash + '?s=64&d=retro'"
+            :src="userPicture"
             class="spaced avatar"
           />
 
@@ -53,6 +53,7 @@
 
 <script>
   import AppState from "./support/AppState";
+  import { HTTP } from "./support/http-common";
 
   export default {
     name: 'App',
@@ -70,6 +71,16 @@
         get user() {
           return AppState.user;
         }
+      }
+    },
+
+    computed: {
+      userPicture() {
+        if (this.user.pictureId) {
+          return `${HTTP.defaults.baseURL}/pictures/${this.user.pictureId}`;
+        }
+
+        return `https://www.gravatar.com/avatar/${this.user.emailHash}?s=640&d=retro`
       }
     }
   }

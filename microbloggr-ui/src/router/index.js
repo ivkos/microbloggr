@@ -1,8 +1,9 @@
+import Feed from '@/components/Feed'
 import Login from '@/components/Login'
 import MeRedirector from '@/components/MeRedirector'
+import Settings from '@/components/Settings'
 import SignUp from '@/components/SignUp'
 import UserProfile from '@/components/UserProfile'
-import Feed from '@/components/Feed'
 import Vue from 'vue'
 import Router from 'vue-router'
 import AppState from "../support/AppState";
@@ -29,6 +30,12 @@ const router = new Router({
       path: '/me',
       name: 'MeRedirector',
       component: MeRedirector
+    },
+
+    {
+      path: '/settings',
+      name: 'Settings',
+      component: Settings
     },
 
     {

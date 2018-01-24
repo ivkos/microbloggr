@@ -32,7 +32,7 @@
 
     <sui-grid-column :width="5" v-if="getUser.isResolved">
       <sui-card class="fluid">
-        <sui-image wrapped :src="'https://www.gravatar.com/avatar/' + user.emailHash + '?s=640&d=retro'"/>
+        <sui-image wrapped :src="userPicture"/>
 
         <sui-card-content>
           <sui-card-header>{{ user.name || user.vanity }}</sui-card-header>
@@ -110,6 +110,16 @@
 
         posts: [],
         post: undefined
+      }
+    },
+
+    computed: {
+      userPicture() {
+        if (this.user.pictureId) {
+          return `${HTTP.defaults.baseURL}/pictures/${this.user.pictureId}`;
+        }
+
+        return `https://www.gravatar.com/avatar/${this.user.emailHash}?s=640&d=retro`
       }
     },
 

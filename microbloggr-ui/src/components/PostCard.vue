@@ -6,7 +6,7 @@
       </div>
 
       <router-link :to="`/${post.author.vanity}`">
-        <img class="ui avatar image" :src="`https://www.gravatar.com/avatar/${post.author.emailHash}?s=64&d=retro`"/>
+        <img class="ui avatar image" :src="userPicture"/>
       </router-link>
 
       <router-link :to="`/${post.author.vanity}`">
@@ -57,11 +57,21 @@
 
     data() {
       return {
-        deleted: false,
+        deleted: false
+      }
+    },
 
-        deletable() {
-          return AppState.isAdmin || this.post.author.id === AppState.user.id
+    computed: {
+      deletable() {
+        return AppState.isAdmin || this.post.author.id === AppState.user.id
+      },
+
+      userPicture() {
+        if (this.post.author.pictureId) {
+          return `${HTTP.defaults.baseURL}/pictures/${this.post.author.pictureId}`;
         }
+
+        return `https://www.gravatar.com/avatar/${this.post.author.emailHash}?s=640&d=retro`
       }
     },
 
