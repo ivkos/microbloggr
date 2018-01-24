@@ -1,12 +1,14 @@
 import Login from '@/components/Login'
-import SignUp from '@/components/SignUp'
 import MeRedirector from '@/components/MeRedirector'
+import SignUp from '@/components/SignUp'
+import UserProfile from '@/components/UserProfile'
 import Vue from 'vue'
 import Router from 'vue-router'
+import AppState from "../support/AppState";
 
-Vue.use(Router)
+Vue.use(Router);
 
-export default new Router({
+const router = new Router({
   mode: "history",
 
   routes: [
@@ -25,24 +27,37 @@ export default new Router({
     {
       path: '/me',
       name: 'MeRedirector',
-      component: MeRedirector
+      component: MeRedirector,
     },
 
     {
       path: '/logout',
+      name: 'LogOut',
       redirect: to => {
         return { path: '/login' }
-      }
-    },
-
-    {
-      path: '/:vanity',
-      name: 'UserProfile'
+      },
     },
 
     {
       path: '/:vanity/:post',
-      name: 'Post'
+      name: 'Post',
+    },
+
+    {
+      path: '/:vanity',
+      name: 'UserProfile',
+      component: UserProfile,
+      props: true,
     }
   ]
-})
+});
+
+router.beforeEach((to, from, next) => {
+  if (!AppState.sessionId && !['Login', 'SignUp', 'LogOut'].includes(to.name)) {
+    router.replace('/login')
+  } else {
+    next()
+  }
+});
+
+export default router;

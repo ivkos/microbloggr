@@ -7,7 +7,7 @@
           Microbloggr
         </router-link>
 
-        <div class="ui simple dropdown item right">
+        <div class="ui simple dropdown item right" v-if="auth">
           <sui-image
             src="https://avatars0.githubusercontent.com/u/991028"
             class="spaced avatar"
@@ -44,8 +44,20 @@
 </template>
 
 <script>
+  import AppState from "./support/AppState";
+
   export default {
-    name: 'App'
+    name: 'App',
+
+    data() {
+      return {
+        auth: false
+      }
+    },
+
+    created() {
+      this.auth = AppState.sessionId !== undefined;
+    }
   }
 </script>
 
@@ -54,9 +66,7 @@
     font-family: 'Lato', 'Helvetica Neue', Arial, Helvetica, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    text-align: center;
     color: #2c3e50;
-    padding-top: 60px;
   }
 
   .ui.menu .item img.logo {
@@ -64,6 +74,6 @@
   }
 
   #main-container {
-    margin-top: 7em;
+    padding-top: 7em;
   }
 </style>

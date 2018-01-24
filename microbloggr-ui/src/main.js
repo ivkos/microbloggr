@@ -3,9 +3,11 @@
 import Vue from 'vue'
 import App from './App'
 import router from './router'
+import AsyncMethods from 'vue-async-methods'
 import SemanticUiVue from 'semantic-ui-vue'
 import 'semantic-ui-css/semantic.min.css'
 
+Vue.use(AsyncMethods);
 Vue.use(SemanticUiVue);
 
 Vue.config.productionTip = false

@@ -1,4 +1,4 @@
-<template />
+<template/>
 
 <script>
   import { HTTP } from "../support/http-common";
@@ -8,7 +8,7 @@
     async created() {
       var res = await HTTP.get("/users/me");
 
-      this.$router.push('/' + res.data.vanity);
+      this.$router.push({ name: 'UserProfile', params: { vanity: res.data.vanity } });
     }
   }
 </script>
