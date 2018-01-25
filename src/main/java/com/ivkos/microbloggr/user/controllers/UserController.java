@@ -71,9 +71,9 @@ class UserController
 
     @DeleteMapping("/{id}")
     @Secured(Role.ADMIN)
-    HttpEntity disableUserById(@PathVariable UUID id)
+    HttpEntity deleteUserById(@PathVariable UUID id)
     {
-        userService.disable(id);
+        userService.delete(id);
         return ResponseEntity.noContent().build();
     }
 
