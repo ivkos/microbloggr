@@ -2,6 +2,7 @@ import Feed from '@/components/Feed'
 import Login from '@/components/Login'
 import MeRedirector from '@/components/MeRedirector'
 import Settings from '@/components/Settings'
+import Admin from '@/components/Admin'
 import SignUp from '@/components/SignUp'
 import UserProfile from '@/components/UserProfile'
 import Vue from 'vue'
@@ -36,6 +37,20 @@ const router = new Router({
       path: '/settings',
       name: 'Settings',
       component: Settings
+    },
+
+    {
+      path: '/admin',
+      name: 'Admin',
+      component: Admin,
+      beforeEnter: (to, from, next) => {
+        if (!AppState.isAdmin) {
+          next("/");
+          return;
+        }
+
+        next();
+      }
     },
 
     {
