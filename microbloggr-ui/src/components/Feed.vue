@@ -61,6 +61,10 @@
 
     methods: {
       createPost() {
+        if (!this.newPost.content && !this.newPost.pictureId) {
+          return;
+        }
+
         this.isCreatingNewPost = true;
 
         return HTTP.post("/posts", {
