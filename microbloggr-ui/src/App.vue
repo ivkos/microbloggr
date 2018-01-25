@@ -3,7 +3,6 @@
     <div class="ui fixed inverted menu">
       <div class="ui container">
         <router-link class="header item" to="/">
-          <img class="logo" src="https://avatars0.githubusercontent.com/u/991028">
           Microbloggr
         </router-link>
 
