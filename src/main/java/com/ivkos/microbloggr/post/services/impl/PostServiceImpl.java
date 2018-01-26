@@ -56,6 +56,22 @@ class PostServiceImpl implements PostService
     }
 
     @Override
+    public List<Post> findAll()
+    {
+        return repository.findAll();
+    }
+
+    @Override
+    public Post create(User author, String content, UUID pictureId)
+    {
+        Picture picture = pictureId != null ? pictureService.findById(pictureId) : null;
+
+        Post post = new Post(author, content, picture);
+
+        return repository.save(post);
+    }
+
+    @Override
     @Transactional(readOnly = true)
     public List<Post> getPostsByUser(User user)
     {
@@ -72,23 +88,24 @@ class PostServiceImpl implements PostService
     }
 
     @Override
-    public Post createPost(User author, String content, UUID pictureId)
+    public List<Post> getFeedForUser(User user)
     {
-        Picture picture = pictureId != null ? pictureService.findById(pictureId) : null;
+        List<User> users = new LinkedList<>();
 
-        Post post = new Post(author, content, picture);
+        users.add(user);
+        users.addAll(followService.getFolloweesOfUser(user));
 
+        return getPostsByMultipleUsers(users);
+    }
+
+    @Override
+    public Post create(Post post)
+    {
         return repository.save(post);
     }
 
     @Override
-    public Post updatePost(Post post)
-    {
-        return repository.save(post);
-    }
-
-    @Override
-    public void deletePost(Post post)
+    public void delete(Post post)
     {
         // TODO Refactor
         Post thePost = repository.findOne(post.getId());
@@ -99,13 +116,16 @@ class PostServiceImpl implements PostService
     }
 
     @Override
-    public List<Post> getFeedForUser(User user)
+    public void delete(UUID uuid) throws EntityNotFoundException
     {
-        List<User> users = new LinkedList<>();
+        if (!repository.exists(uuid)) throw new EntityNotFoundException("Post not found");
+        repository.delete(uuid);
+    }
 
-        users.add(user);
-        users.addAll(followService.getFolloweesOfUser(user));
-
-        return getPostsByMultipleUsers(users);
+    @Override
+    public Post update(Post entity)
+    {
+        findById(entity.getId());
+        return repository.save(entity);
     }
 }

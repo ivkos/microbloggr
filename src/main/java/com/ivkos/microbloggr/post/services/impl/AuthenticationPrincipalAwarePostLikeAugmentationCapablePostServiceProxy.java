@@ -27,6 +27,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
@@ -40,7 +41,8 @@ class AuthenticationPrincipalAwarePostLikeAugmentationCapablePostServiceProxy im
     private final PostLikeService postLikeService;
 
     @Autowired
-    AuthenticationPrincipalAwarePostLikeAugmentationCapablePostServiceProxy(PostService postService, PostLikeService postLikeService)
+    AuthenticationPrincipalAwarePostLikeAugmentationCapablePostServiceProxy(PostService postService,
+                                                                            PostLikeService postLikeService)
     {
         this.postService = postService;
         this.postLikeService = postLikeService;
@@ -51,6 +53,22 @@ class AuthenticationPrincipalAwarePostLikeAugmentationCapablePostServiceProxy im
     public Post findById(UUID id)
     {
         return augment(postService.findById(id));
+    }
+
+    @Override
+    public List<Post> findAll()
+    {
+        return postService.findAll()
+            .stream()
+            .map(this::augment)
+            .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional
+    public Post create(User author, String content, UUID pictureId)
+    {
+        return augment(postService.create(author, content, pictureId));
     }
 
     @Override
@@ -74,26 +92,6 @@ class AuthenticationPrincipalAwarePostLikeAugmentationCapablePostServiceProxy im
     }
 
     @Override
-    @Transactional
-    public Post createPost(User author, String content, UUID pictureId)
-    {
-        return augment(postService.createPost(author, content, pictureId));
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public Post updatePost(Post post)
-    {
-        return augment(postService.updatePost(post));
-    }
-
-    @Override
-    public void deletePost(Post post)
-    {
-        postService.deletePost(post);
-    }
-
-    @Override
     @Transactional(readOnly = true)
     public List<Post> getFeedForUser(User user)
     {
@@ -101,6 +99,31 @@ class AuthenticationPrincipalAwarePostLikeAugmentationCapablePostServiceProxy im
             .stream()
             .map(this::augment)
             .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Post create(Post post)
+    {
+        return augment(postService.create(post));
+    }
+
+    @Override
+    public void delete(Post post)
+    {
+        postService.delete(post);
+    }
+
+    @Override
+    public void delete(UUID uuid) throws EntityNotFoundException
+    {
+        postService.delete(uuid);
+    }
+
+    @Override
+    public Post update(Post entity)
+    {
+        return augment(postService.update(entity));
     }
 
     private Post augment(Post post)

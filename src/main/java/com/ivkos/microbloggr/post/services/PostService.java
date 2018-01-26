@@ -17,25 +17,20 @@
 package com.ivkos.microbloggr.post.services;
 
 import com.ivkos.microbloggr.post.models.Post;
+import com.ivkos.microbloggr.support.service.CrudEntityService;
 import com.ivkos.microbloggr.user.models.User;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
-public interface PostService
+public interface PostService extends CrudEntityService<Post, UUID>
 {
-    Post findById(UUID id);
+    Post create(User author, String content, UUID pictureId);
 
     List<Post> getPostsByUser(User user);
 
     List<Post> getPostsByMultipleUsers(Collection<User> users);
-
-    Post createPost(User author, String content, UUID pictureId);
-
-    Post updatePost(Post post);
-
-    void deletePost(Post post);
 
     List<Post> getFeedForUser(User user);
 }

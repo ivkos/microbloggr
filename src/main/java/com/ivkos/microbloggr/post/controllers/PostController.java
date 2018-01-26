@@ -53,7 +53,7 @@ class PostController
     Post createPost(@Valid @RequestBody CreatePostRequestForm form, @AuthenticationPrincipal User author)
     {
         UUID pictureId = form.pictureId != null ? UUID.fromString(form.pictureId) : null;
-        return postService.createPost(author, form.content, pictureId);
+        return postService.create(author, form.content, pictureId);
     }
 
     @DeleteMapping("/{id}")
@@ -62,7 +62,7 @@ class PostController
         Post post = postService.findById(id);
 
         if (actor.isAdmin() || post.getAuthor().getId().equals(actor.getId())) {
-            postService.deletePost(post);
+            postService.delete(post);
 
             return ResponseEntity.noContent().build();
         }

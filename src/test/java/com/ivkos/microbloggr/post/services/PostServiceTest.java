@@ -58,10 +58,10 @@ public class PostServiceTest
     public void setUp() throws Exception
     {
         user = userService.create("me@ivkos.com", "password", "ivkos");
-        textPost = postService.createPost(user, "Hello world", null);
+        textPost = postService.create(user, "Hello world", null);
 
         picture = pictureService.create(new MockMultipartFile("pic.jpg", new byte[] { 0 }));
-        imagePost = postService.createPost(user, "Some text", picture.getId());
+        imagePost = postService.create(user, "Some text", picture.getId());
     }
 
     @Test
@@ -88,7 +88,7 @@ public class PostServiceTest
     public void thatPostIsDeleted()
     {
         UUID postId = imagePost.getId();
-        postService.deletePost(imagePost);
+        postService.delete(imagePost);
 
         assertThatThrownBy(() -> postService.findById(postId))
             .isInstanceOf(EntityNotFoundException.class);
@@ -113,7 +113,7 @@ public class PostServiceTest
     {
         User user2 = userService.create("user2@example.com", "password", "user2");
         followService.create(user, user2);
-        postService.createPost(user2, "abracadabra", null);
+        postService.create(user2, "abracadabra", null);
 
         List<Post> feed = postService.getFeedForUser(user);
         assertThat(feed).isNotEmpty();
@@ -123,7 +123,7 @@ public class PostServiceTest
     public void thatPostIsUpdated()
     {
         String newContent = "POST IS UPDATED";
-        Post updatedPost = postService.updatePost(textPost.setContent(newContent));
+        Post updatedPost = postService.create(textPost.setContent(newContent));
 
         assertThat(updatedPost.getContent()).isEqualTo(newContent);
     }

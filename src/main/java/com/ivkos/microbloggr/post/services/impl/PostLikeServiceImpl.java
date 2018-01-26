@@ -25,6 +25,7 @@ import com.ivkos.microbloggr.user.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -57,7 +58,7 @@ class PostLikeServiceImpl implements PostLikeService
     public void unlikePost(User actor, Post post)
     {
         if (!doesLike(actor, post)) return;
-        likeRepository.delete(new PostLikeId(actor, post));
+        delete(new PostLikeId(actor, post));
     }
 
     @Override
@@ -78,5 +79,39 @@ class PostLikeServiceImpl implements PostLikeService
     public long getLikeCountOfPost(Post post)
     {
         return likeRepository.countByIdPost(post);
+    }
+
+    @Override
+    public PostLike create(PostLike entity)
+    {
+        return likeRepository.save(entity);
+    }
+
+    @Override
+    public void delete(PostLike entity)
+    {
+        delete(entity.getId());
+    }
+
+    @Override
+    public void delete(PostLikeId postLikeId) throws EntityNotFoundException
+    {
+        if (!likeRepository.exists(postLikeId)) throw new EntityNotFoundException("Follow not found");
+        likeRepository.delete(postLikeId);
+    }
+
+    @Override
+    public PostLike findById(PostLikeId postLikeId) throws EntityNotFoundException
+    {
+        PostLike postLike = likeRepository.findOne(postLikeId);
+        if (postLike == null) throw new EntityNotFoundException("Post like not found");
+
+        return postLike;
+    }
+
+    @Override
+    public List<PostLike> findAll()
+    {
+        return likeRepository.findAll();
     }
 }

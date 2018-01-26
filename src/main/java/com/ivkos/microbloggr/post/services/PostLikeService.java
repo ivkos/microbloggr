@@ -18,12 +18,19 @@ package com.ivkos.microbloggr.post.services;
 
 import com.ivkos.microbloggr.post.models.Post;
 import com.ivkos.microbloggr.post.models.PostLike;
+import com.ivkos.microbloggr.post.models.PostLikeId;
+import com.ivkos.microbloggr.support.service.CreatableEntityService;
+import com.ivkos.microbloggr.support.service.DeletableEntityService;
+import com.ivkos.microbloggr.support.service.ReadableEntityService;
 import com.ivkos.microbloggr.user.models.User;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface PostLikeService
+public interface PostLikeService extends
+    CreatableEntityService<PostLike>,
+    ReadableEntityService<PostLike, PostLikeId>,
+    DeletableEntityService<PostLike, PostLikeId>
 {
     Optional<PostLike> find(User liker, Post post);
 

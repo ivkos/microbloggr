@@ -17,12 +17,19 @@
 package com.ivkos.microbloggr.follow.services;
 
 import com.ivkos.microbloggr.follow.models.Follow;
+import com.ivkos.microbloggr.follow.models.FollowId;
+import com.ivkos.microbloggr.support.service.CreatableEntityService;
+import com.ivkos.microbloggr.support.service.DeletableEntityService;
+import com.ivkos.microbloggr.support.service.ReadableEntityService;
 import com.ivkos.microbloggr.user.models.User;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface FollowService
+public interface FollowService extends
+    CreatableEntityService<Follow>,
+    ReadableEntityService<Follow, FollowId>,
+    DeletableEntityService<Follow, FollowId>
 {
     Optional<Follow> find(User follower, User followee);
 

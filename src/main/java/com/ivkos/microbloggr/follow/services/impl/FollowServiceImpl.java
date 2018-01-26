@@ -24,6 +24,7 @@ import com.ivkos.microbloggr.user.models.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -50,7 +51,7 @@ class FollowServiceImpl implements FollowService
         ensureNotSameUser(follower, followee);
 
         return find(follower, followee)
-            .orElseGet(() -> repo.save(new Follow(follower, followee)));
+            .orElseGet(() -> create(new Follow(follower, followee)));
     }
 
     @Override
@@ -59,7 +60,7 @@ class FollowServiceImpl implements FollowService
         ensureNotSameUser(follower, followee);
 
         if (!doesFollow(follower, followee)) return;
-        repo.delete(new FollowId(follower, followee));
+        delete(new FollowId(follower, followee));
     }
 
     @Override
@@ -96,6 +97,40 @@ class FollowServiceImpl implements FollowService
     public long getFolloweesCountOfUser(User user)
     {
         return repo.countByIdFollower(user);
+    }
+
+    @Override
+    public Follow create(Follow entity)
+    {
+        return repo.save(entity);
+    }
+
+    @Override
+    public void delete(Follow entity)
+    {
+        delete(entity.getId());
+    }
+
+    @Override
+    public void delete(FollowId followId) throws EntityNotFoundException
+    {
+        if (!repo.exists(followId)) throw new EntityNotFoundException("Follow not found");
+        repo.delete(followId);
+    }
+
+    @Override
+    public Follow findById(FollowId followId) throws EntityNotFoundException
+    {
+        Follow follow = repo.findOne(followId);
+        if (follow == null) throw new EntityNotFoundException("Follow not found");
+
+        return follow;
+    }
+
+    @Override
+    public List<Follow> findAll()
+    {
+        return repo.findAll();
     }
 
     private static void ensureNotSameUser(User follower, User followee)
