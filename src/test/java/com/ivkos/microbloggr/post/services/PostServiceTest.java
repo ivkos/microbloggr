@@ -17,8 +17,8 @@
 package com.ivkos.microbloggr.post.services;
 
 import com.ivkos.microbloggr.follow.services.FollowService;
-import com.ivkos.microbloggr.picture.Picture;
-import com.ivkos.microbloggr.picture.PictureService;
+import com.ivkos.microbloggr.picture.models.Picture;
+import com.ivkos.microbloggr.picture.services.PictureService;
 import com.ivkos.microbloggr.post.models.Post;
 import com.ivkos.microbloggr.user.models.User;
 import com.ivkos.microbloggr.user.services.UserService;

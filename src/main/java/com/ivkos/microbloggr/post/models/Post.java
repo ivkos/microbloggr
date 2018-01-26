@@ -18,7 +18,7 @@ package com.ivkos.microbloggr.post.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.ivkos.microbloggr.picture.Picture;
+import com.ivkos.microbloggr.picture.models.Picture;
 import com.ivkos.microbloggr.user.models.User;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;

@@ -17,7 +17,7 @@
 package com.ivkos.microbloggr.user.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.ivkos.microbloggr.picture.Picture;
+import com.ivkos.microbloggr.picture.models.Picture;
 import com.ivkos.microbloggr.support.Role;
 import org.hibernate.validator.constraints.Email;
 import org.springframework.security.core.GrantedAuthority;

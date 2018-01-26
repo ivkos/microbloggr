@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-package com.ivkos.microbloggr.picture;
+package com.ivkos.microbloggr.picture.services;
 
+import com.ivkos.microbloggr.picture.models.Picture;
 import com.ivkos.microbloggr.support.service.CreatableEntityService;
 import com.ivkos.microbloggr.support.service.DeletableEntityService;
 import com.ivkos.microbloggr.support.service.ReadableEntityService;

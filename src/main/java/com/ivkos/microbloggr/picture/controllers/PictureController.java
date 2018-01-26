@@ -14,8 +14,10 @@
  * limitations under the License.
  */
 
-package com.ivkos.microbloggr.picture;
+package com.ivkos.microbloggr.picture.controllers;
 
+import com.ivkos.microbloggr.picture.models.Picture;
+import com.ivkos.microbloggr.picture.services.PictureService;
 import com.ivkos.microbloggr.support.Role;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;

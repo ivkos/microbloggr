@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-package com.ivkos.microbloggr.picture;
+package com.ivkos.microbloggr.picture.repositories;
 
+import com.ivkos.microbloggr.picture.models.Picture;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Component;
 

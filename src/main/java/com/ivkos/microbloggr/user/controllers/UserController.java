@@ -16,8 +16,8 @@
 
 package com.ivkos.microbloggr.user.controllers;
 
-import com.ivkos.microbloggr.picture.Picture;
-import com.ivkos.microbloggr.picture.PictureService;
+import com.ivkos.microbloggr.picture.models.Picture;
+import com.ivkos.microbloggr.picture.services.PictureService;
 import com.ivkos.microbloggr.support.Role;
 import com.ivkos.microbloggr.support.forms.request.UserUpdateRequestForm;
 import com.ivkos.microbloggr.user.models.User;

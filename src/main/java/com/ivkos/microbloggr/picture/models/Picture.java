@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.ivkos.microbloggr.picture;
+package com.ivkos.microbloggr.picture.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -37,7 +37,7 @@ public class Picture
     @JsonIgnore
     private boolean deleted = false;
 
-    Picture() {}
+    public Picture() {}
 
     public UUID getId()
     {
