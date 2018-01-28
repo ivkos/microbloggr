@@ -1,38 +1,70 @@
 <template>
-  <div class="ui two column grid">
-    <div class="centered column">
-      <div class="ui tall stacked segment">
-        <h3>New Post</h3>
-        <form class="ui form" enctype="multipart/form-data" @submit.prevent="createPost">
-          <div class="field">
-            <textarea rows="2" v-model="newPost.content" placeholder="What's on your mind?"></textarea>
-          </div>
+  <div class="ui three column grid">
+    <div class="centered row">
+      <div class="six wide column">
+        <div class="ui tall stacked segment">
+          <h3>New Post</h3>
+          <form class="ui form" enctype="multipart/form-data" @submit.prevent="createPost">
+            <div class="field">
+              <textarea rows="2" v-model="newPost.content" placeholder="What's on your mind?"></textarea>
+            </div>
 
-          <label for="file" class="ui left floated icon button"
-                 :class="{loading: isUploading, positive:newPost.pictureId, primary:isUploading}">
-            <i class="image icon" :class="{image: !newPost.pictureId, checkmark: newPost.pictureId}"/>
-          </label>
-          <input type="file" name="file" id="file" accept="image/*" style="display:none" :disabled="isUploading"
-                 @change="fileChanged">
+            <label for="file" class="ui left floated icon button"
+                   :class="{loading: isUploading, positive:newPost.pictureId, primary:isUploading}">
+              <i class="image icon" :class="{image: !newPost.pictureId, checkmark: newPost.pictureId}"/>
+            </label>
+            <input type="file" name="file" id="file" accept="image/*" style="display:none" :disabled="isUploading"
+                   @change="fileChanged">
 
-          <button class="ui right floated primary button" type="submit">Post</button>
+            <button class="ui right floated primary button" type="submit">Post</button>
 
-          <div class="ui inverted dimmer" v-bind:class="{ active: isCreatingNewPost }">
-            <div class="ui loader"></div>
-          </div>
+            <div class="ui inverted dimmer" v-bind:class="{ active: isCreatingNewPost }">
+              <div class="ui loader"></div>
+            </div>
 
-          <br><br>
-        </form>
+            <br><br>
+          </form>
+        </div>
       </div>
 
-      <br><br>
+      <div class="three wide column">
+        <h5>Suggested People to Follow</h5>
 
-      <div class="ui cards">
-        <post-card v-for="p in posts" :key="p.id" :post="p"/>
+        <template v-if="getSuggestedFollowees.isResolved">
+          <template v-if="suggestedFollowees.length > 0">
+          <div class="ui selection link list">
+            <router-link :to="`/${u.vanity}`" class="item" v-for="u in suggestedFollowees" :key="u.id">
+              <img class="ui mini avatar image" :src="getUserPicture(u)"/>
+              <div class="content">
+                <a class="header">{{ u.name || u.vanity }}</a>
+                <div class="description">@{{ u.vanity }}</div>
+              </div>
+            </router-link>
+          </div>
+          </template>
+
+          <template v-else>
+            <p><i class="info circle icon" /> We have no suggestions for you right now.</p>
+          </template>
+        </template>
+
+
+
+        <div class="ui inverted dimmer" :class="{ active: getSuggestedFollowees.isPending }">
+          <div class="ui loader"></div>
+        </div>
       </div>
+    </div>
 
-      <div class="ui inverted dimmer" v-bind:class="{ active: getFeed.isPending }">
-        <div class="ui loader"></div>
+    <div class="centered row">
+      <div class="nine wide column">
+        <div class="ui cards">
+          <post-card v-for="p in posts" :key="p.id" :post="p"/>
+        </div>
+
+        <div class="ui inverted dimmer" v-bind:class="{ active: getFeed.isPending }">
+          <div class="ui loader"></div>
+        </div>
       </div>
     </div>
   </div>
@@ -51,6 +83,7 @@
       return {
         isUploading: false,
         isCreatingNewPost: false,
+        suggestedFollowees: [],
         posts: [],
         newPost: {
           content: undefined,
@@ -98,6 +131,14 @@
           .finally(() => {
             this.isUploading = false;
           });
+      },
+
+      getUserPicture(user) {
+        if (user.pictureId) {
+          return `${HTTP.defaults.baseURL}/pictures/${user.pictureId}`;
+        }
+
+        return `https://www.gravatar.com/avatar/${user.emailHash}?s=640&d=retro`
       }
     },
 
@@ -109,11 +150,22 @@
             this.posts = posts;
             return posts;
           });
+      },
+
+      getSuggestedFollowees() {
+        return HTTP.get("/suggest/followees")
+          .then(res => res.data)
+          .then(users => {
+            users = users.slice(0, 3);
+            this.suggestedFollowees = users;
+            return users;
+          });
       }
     },
 
     created() {
       this.getFeed.execute();
+      this.getSuggestedFollowees.execute();
     }
   }
 </script>
