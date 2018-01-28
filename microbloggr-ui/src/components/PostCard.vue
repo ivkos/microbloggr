@@ -19,7 +19,7 @@
     </div>
 
     <div class="image" v-if="post.pictureId">
-      <img class="ui image wrapped" :src="getPictureUrl(post.pictureId)"/>
+      <img class="ui fluid image" :src="getPictureUrl(post.pictureId)"/>
     </div>
 
     <div class="content">

@@ -6,7 +6,7 @@
 
     <div class="five wide column" v-if="getUser.isResolved">
       <div class="ui fluid card">
-        <img class="ui wrapped image" :src="userPicture"/>
+        <img class="ui fluid image" :src="userPicture"/>
 
         <div class="content">
           <div class="header">{{ user.name || user.vanity }}</div>
