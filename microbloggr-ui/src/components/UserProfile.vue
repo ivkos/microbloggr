@@ -47,20 +47,20 @@
         <div class="extra content">
           <div class="ui three column grid">
             <div class="text-centered row">
-              <div class="column">
+              <router-link :to="`/${user.vanity}`" class="column">
                 <strong>{{ posts.length }}</strong>
                 <br>post{{ posts.length === 1 ? '' : 's' }}
-              </div>
+              </router-link>
 
-              <div class="column">
+              <router-link :to="`/${user.vanity}/followers`" class="column">
                 <strong>{{ followersCount }}</strong>
                 <br>follower{{ followersCount === 1 ? '' : 's' }}
-              </div>
+              </router-link>
 
-              <div class="column">
+              <router-link :to="`/${user.vanity}/following`" class="column">
                 <strong>{{ followeesCount || 0 }}</strong>
                 <br>following
-              </div>
+              </router-link>
             </div>
           </div>
         </div>
