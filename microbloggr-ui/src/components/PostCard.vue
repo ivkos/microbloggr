@@ -1,5 +1,5 @@
 <template>
-  <div class="ui raised fluid card" v-if="!deleted">
+  <div class="ui raised fluid card" v-if="post && !deleted">
     <div class="content">
       <div class="right floated meta">
         <router-link :to="`/${post.author.vanity}/posts/${post.id}`">{{ post.createdAt | moment("from") }}</router-link>
@@ -63,10 +63,14 @@
 
     computed: {
       deletable() {
+        if (!this.post) return false;
+
         return AppState.isAdmin || this.post.author.id === AppState.user.id
       },
 
       userPicture() {
+        if (!this.post) return false;
+
         if (this.post.author.pictureId) {
           return `${HTTP.defaults.baseURL}/pictures/${this.post.author.pictureId}`;
         }
