@@ -14,27 +14,25 @@
  * limitations under the License.
  */
 
-package com.ivkos.microbloggr.user.support;
+package com.ivkos.microbloggr.aop;
 
 import com.ivkos.microbloggr.follow.services.FollowService;
 import com.ivkos.microbloggr.user.models.User;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 @Aspect
 @Component
-class UserFollowStatusAugmentationAspect
+class UserFollowStatusAugmentingAspect extends AbstractAuthenticationPrincipalAwareEntityAugmentingAspect<User>
 {
     private final FollowService followService;
 
     @Autowired
-    UserFollowStatusAugmentationAspect(FollowService followService)
+    UserFollowStatusAugmentingAspect(FollowService followService)
     {
         this.followService = followService;
     }
@@ -45,7 +43,7 @@ class UserFollowStatusAugmentationAspect
     )
     public void singleUserAdvice(User user)
     {
-        augment(user, getViewer());
+        augment(user, getAuthenticationPrincipal());
     }
 
     @AfterReturning(
@@ -54,17 +52,11 @@ class UserFollowStatusAugmentationAspect
     )
     public void userListAdvice(List<User> userList)
     {
-        User viewer = getViewer();
-        userList.forEach(user -> augment(user, viewer));
+        Object authenticationPrincipal = getAuthenticationPrincipal();
+        userList.forEach(user -> augment(user, authenticationPrincipal));
     }
 
-    private User getViewer()
-    {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return authentication != null ? (User) authentication.getPrincipal() : null;
-    }
-
-    private void augment(User user, User viewer)
+    protected void augment(User user, Object authenticationPrincipal)
     {
         if (user.getFollowersCount() == null) {
             user.setFollowersCount(followService.getFollowersCountOfUser(user));
@@ -74,8 +66,8 @@ class UserFollowStatusAugmentationAspect
             user.setFolloweesCount(followService.getFolloweesCountOfUser(user));
         }
 
-        if (viewer != null && user.getFollowed() == null) {
-            user.setFollowed(followService.doesFollow(viewer, user));
+        if (authenticationPrincipal != null && user.getFollowed() == null) {
+            user.setFollowed(followService.doesFollow((User) authenticationPrincipal, user));
         }
     }
 }
