@@ -30,47 +30,59 @@
       </div>
     </div>
 
-    <sui-grid-column :width="5" v-if="getUser.isResolved">
-      <sui-card class="fluid">
-        <sui-image wrapped :src="userPicture"/>
+    <div class="five wide column" v-if="getUser.isResolved">
+      <div class="ui fluid card">
+        <img class="ui wrapped image" :src="userPicture"/>
 
-        <sui-card-content>
-          <sui-card-header>{{ user.name || user.vanity }}</sui-card-header>
+        <div class="content">
+          <div class="header">{{ user.name || user.vanity }}</div>
 
-          <sui-card-meta>
-            <router-link :to="{ name: 'UserProfile', params: { vanity: user.vanity }}">@{{ user.vanity }}
+          <div class="meta">
+            <router-link :to="{ name: 'UserProfile', params: { vanity: user.vanity }}">
+              @{{ user.vanity }}
             </router-link>
-          </sui-card-meta>
-        </sui-card-content>
+          </div>
+        </div>
 
-        <sui-card-content extra>
-            <span>
-              <sui-icon name="comment outline"/>{{ posts.length }} post{{ posts.length === 1 ? '' : 's' }}
-            </span>
+        <div class="extra content">
+          <div class="ui three column grid">
+            <div class="text-centered row">
+              <div class="column">
+                <strong>{{ posts.length }}</strong>
+                <br>post{{ posts.length === 1 ? '' : 's' }}
+              </div>
 
-          <span slot="right">
-              <sui-icon name="user outline"/>{{ followersCount }} follower{{ followersCount === 1 ? '' : 's' }}
-            </span>
-        </sui-card-content>
+              <div class="column">
+                <strong>{{ followersCount }}</strong>
+                <br>follower{{ followersCount === 1 ? '' : 's' }}
+              </div>
+
+              <div class="column">
+                <strong>{{ followeesCount || 0 }}</strong>
+                <br>following
+              </div>
+            </div>
+          </div>
+        </div>
 
         <template v-if="!isCurrentUser">
           <template v-if="isFollowed">
             <div class="ui animated vertical bottom attached basic primary button"
                  @click="toggleFollow">
               <div class="visible content">
-                <sui-icon name="checkmark"/>
+                <i class="icon checkmark"/>
                 Following
               </div>
 
               <div class="hidden content">
-                <sui-icon name="remove user"/>
+                <i class="icon remove user"/>
                 Unfollow
               </div>
             </div>
           </template>
           <template v-else>
             <div class="ui bottom attached primary button" @click="toggleFollow">
-              <sui-icon name="add user"/>
+              <i class="icon add user"/>
               Follow
             </div>
           </template>
@@ -79,8 +91,8 @@
         <div class="ui inverted dimmer" v-bind:class="{ active: isLoading }">
           <div class="ui loader"></div>
         </div>
-      </sui-card>
-    </sui-grid-column>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -105,7 +117,9 @@
         isCurrentUser: undefined,
 
         followers: [],
+        followees: [],
         followersCount: 0,
+        followeesCount: 0,
         isFollowed: undefined,
 
         posts: [],
@@ -134,13 +148,21 @@
       },
 
       getFollowers() {
-        return HTTP.get(`/users/${this.vanity}/followers`)
-          .then(res => res.data)
-          .then(followers => {
-            this.followers = followers;
-            this.followersCount = followers.length;
-            this.isFollowed = followers.some(f => f.id === AppState.user.id);
-          });
+        return Promise.all([
+          HTTP.get(`/users/${this.vanity}/followers`)
+            .then(res => res.data)
+            .then(followers => {
+              this.followers = followers;
+              this.followersCount = followers.length;
+              this.isFollowed = followers.some(f => f.id === AppState.user.id);
+            }),
+          HTTP.get(`/users/${this.vanity}/followees`)
+            .then(res => res.data)
+            .then(followees => {
+              this.followees = followees;
+              this.followeesCount = followees.length;
+            })
+        ]);
       },
 
       getPosts() {
@@ -199,4 +221,8 @@
   }
 </script>
 
-<style></style>
+<style>
+  .text-centered {
+    text-align: center;
+  }
+</style>
