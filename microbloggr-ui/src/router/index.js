@@ -2,6 +2,7 @@ import Admin from '@/components/Admin'
 import Feed from '@/components/Feed'
 import Login from '@/components/Login'
 import MeRedirector from '@/components/MeRedirector'
+import NotFound from '@/components/NotFound'
 import Settings from '@/components/Settings'
 import SignUp from '@/components/SignUp'
 import UserProfile from '@/components/UserProfile'
@@ -18,6 +19,12 @@ const router = new Router({
   mode: "history",
 
   routes: [
+    {
+      path: '/404',
+      name: 'NotFound',
+      component: NotFound
+    },
+
     {
       path: '/login',
       name: 'Login',
@@ -88,6 +95,11 @@ const router = new Router({
       path: '/',
       name: 'Feed',
       component: Feed
+    },
+
+    {
+      path: '*',
+      redirect: '/404'
     }
   ]
 });

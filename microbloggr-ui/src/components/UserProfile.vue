@@ -103,6 +103,13 @@
             this.user = user;
             this.isCurrentUser = AppState.user.id === user.id;
           })
+          .catch(err => {
+            if (err.response.status >= 400) {
+              this.$router.replace({ name: 'NotFound' })
+            }
+
+            throw err;
+          })
       }
     },
 

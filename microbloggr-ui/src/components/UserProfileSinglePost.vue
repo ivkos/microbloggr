@@ -30,6 +30,12 @@
           .then(post => {
             this.post = post;
             return post;
+          }).catch(err => {
+            if (err.response.status >= 400) {
+              this.$router.replace({ name: 'NotFound' })
+            }
+
+            throw err;
           });
       }
     },
