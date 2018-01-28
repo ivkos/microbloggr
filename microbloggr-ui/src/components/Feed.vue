@@ -2,7 +2,7 @@
   <div class="ui three column grid">
     <div class="centered row">
       <div class="six wide column">
-        <div class="ui tall stacked segment">
+        <div class="ui tall stacked blue segment">
           <h3>New Post</h3>
           <form class="ui form" enctype="multipart/form-data" @submit.prevent="createPost">
             <div class="field">

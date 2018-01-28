@@ -1,8 +1,7 @@
 <template>
-  <div class="ui fluid  card" v-if="post && !deleted"
+  <div class="ui fluid card" v-if="post"
        @mouseover="hovered = true" @mouseleave="hovered = false"
-       :class="{ raised: hovered }"
-  >
+       :class="{ raised: hovered && !deleted }">
     <div class="content">
       <div class="right floated meta">
         <router-link :to="`/${post.author.vanity}/posts/${post.id}`">{{ post.createdAt | moment("from") }}</router-link>
@@ -46,6 +45,17 @@
       <span class="right floated" v-show="deletable">
         <i class="delete like icon" @click="deletePost"/>
       </span>
+
+      <div class="ui inverted dimmer" :class="{ active: deleted }">
+        <div class="content">
+          <div class="center">
+            <h2 class="ui icon header">
+              <i class="trash outline icon"></i>
+              Post deleted.
+            </h2>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>

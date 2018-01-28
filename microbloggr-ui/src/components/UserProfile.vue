@@ -5,7 +5,7 @@
     </div>
 
     <div class="five wide column" v-if="getUser.isResolved">
-      <div class="ui fluid card">
+      <div class="ui fluid grey card">
         <img class="ui fluid image" :src="userPicture"/>
 
         <div class="content">
