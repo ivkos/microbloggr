@@ -1,10 +1,13 @@
+import Admin from '@/components/Admin'
 import Feed from '@/components/Feed'
 import Login from '@/components/Login'
 import MeRedirector from '@/components/MeRedirector'
 import Settings from '@/components/Settings'
-import Admin from '@/components/Admin'
 import SignUp from '@/components/SignUp'
 import UserProfile from '@/components/UserProfile'
+import UserProfileAllPosts from '@/components/UserProfileAllPosts'
+import UserProfileSinglePost from '@/components/UserProfileSinglePost'
+import UserProfileUserList from '@/components/UserProfileUserList'
 import Vue from 'vue'
 import Router from 'vue-router'
 import AppState from "../support/AppState";
@@ -63,15 +66,15 @@ const router = new Router({
     },
 
     {
-      path: '/:vanity/:post',
-      name: 'Post'
-    },
-
-    {
       path: '/:vanity',
-      name: 'UserProfile',
       component: UserProfile,
-      props: true
+      props: true,
+      children: [
+        { path: "", component: UserProfileAllPosts, props: true },
+        { path: "posts/:postId", component: UserProfileSinglePost, props: true },
+        { path: "followers", component: UserProfileUserList, props: (route) => ({type: 'followers', vanity: route.params.vanity}) },
+        { path: "following", component: UserProfileUserList, props: (route) => ({type: 'followees', vanity: route.params.vanity}) }
+      ]
     },
 
     {

@@ -1,33 +1,7 @@
 <template>
   <div class="ui two column grid">
-    <catch-async-error :method="getUser">
-      <div v-if="getUser.rejectedWith">
-        Could not load user due to an error. Details: {{getUser.rejectedWith.message}}
-      </div>
-    </catch-async-error>
-
-    <div class="ui eleven centered column">
-      <template v-if="!singlePost">
-        <h2>Posts</h2>
-
-        <template v-if="getPosts.resolvedWithEmpty">
-          <div class="ui stacked segment">This user hasn't posted anything.</div>
-        </template>
-
-        <template v-if="getPosts.resolvedWithSomething">
-          <div class="ui cards">
-            <post-card v-for="p in posts" :key="p.id" :post="p"/>
-          </div>
-        </template>
-      </template>
-
-      <template v-if="singlePost">
-        <post-card :post="post"/>
-      </template>
-
-      <div class="ui inverted dimmer" v-bind:class="{ active: getPosts.isPending || getSinglePost.isPending }">
-        <div class="ui loader"></div>
-      </div>
+    <div class="eleven centered column">
+      <router-view/>
     </div>
 
     <div class="five wide column" v-if="getUser.isResolved">
@@ -48,17 +22,17 @@
           <div class="ui three column grid">
             <div class="text-centered row">
               <router-link :to="`/${user.vanity}`" class="column">
-                <strong>{{ posts.length }}</strong>
-                <br>post{{ posts.length === 1 ? '' : 's' }}
+                <strong>{{ user.postsCount || 0 }}</strong>
+                <br>post{{ (user.postsCount || 0) === 1 ? '' : 's' }}
               </router-link>
 
               <router-link :to="`/${user.vanity}/followers`" class="column">
-                <strong>{{ followersCount }}</strong>
-                <br>follower{{ followersCount === 1 ? '' : 's' }}
+                <strong>{{ user.followersCount || 0 }}</strong>
+                <br>follower{{ (user.followersCount || 0) === 1 ? '' : 's' }}
               </router-link>
 
               <router-link :to="`/${user.vanity}/following`" class="column">
-                <strong>{{ followeesCount || 0 }}</strong>
+                <strong>{{ user.followeesCount || 0 }}</strong>
                 <br>following
               </router-link>
             </div>
@@ -66,7 +40,7 @@
         </div>
 
         <template v-if="!isCurrentUser">
-          <template v-if="isFollowed">
+          <template v-if="user.followed">
             <div class="ui animated vertical bottom attached basic primary button"
                  @click="toggleFollow">
               <div class="visible content">
@@ -88,7 +62,7 @@
           </template>
         </template>
 
-        <div class="ui inverted dimmer" v-bind:class="{ active: isLoading }">
+        <div class="ui inverted dimmer" :class="{ active: getUser.isPending }">
           <div class="ui loader"></div>
         </div>
       </div>
@@ -99,31 +73,15 @@
 <script>
   import AppState from "../support/AppState";
   import { HTTP } from "../support/http-common";
-  import PostCard from "./PostCard";
 
   export default {
-    components: { PostCard },
     name: 'UserProfile',
-    props: ['vanity', 'postId'],
+    props: ['vanity'],
 
     data() {
       return {
-        singlePost: false,
-        actualPromise: undefined,
-        actualAction: undefined,
-        isLoading: true,
-
-        user: undefined,
-        isCurrentUser: undefined,
-
-        followers: [],
-        followees: [],
-        followersCount: 0,
-        followeesCount: 0,
-        isFollowed: undefined,
-
-        posts: [],
-        post: undefined
+        user: {},
+        isCurrentUser: true
       }
     },
 
@@ -145,77 +103,27 @@
             this.user = user;
             this.isCurrentUser = AppState.user.id === user.id;
           })
-      },
-
-      getFollowers() {
-        return Promise.all([
-          HTTP.get(`/users/${this.vanity}/followers`)
-            .then(res => res.data)
-            .then(followers => {
-              this.followers = followers;
-              this.followersCount = followers.length;
-              this.isFollowed = followers.some(f => f.id === AppState.user.id);
-            }),
-          HTTP.get(`/users/${this.vanity}/followees`)
-            .then(res => res.data)
-            .then(followees => {
-              this.followees = followees;
-              this.followeesCount = followees.length;
-            })
-        ]);
-      },
-
-      getPosts() {
-        return HTTP.get(`/users/${this.vanity}/posts`)
-          .then(res => res.data)
-          .then(posts => {
-            this.posts = posts;
-            return posts;
-          });
-      },
-
-      getSinglePost() {
-        return HTTP.get(`/posts/${this.postId}`)
-          .then(res => res.data)
-          .then(post => {
-            this.post = post;
-            return post;
-          })
       }
     },
 
     methods: {
       toggleFollow() {
-        const verb = this.isFollowed ? 'delete' : 'put';
+        const verb = this.user.followed ? 'delete' : 'put';
 
-        this.followersCount = this.followersCount + (this.isFollowed ? -1 : 1);
-        this.isFollowed = !this.isFollowed;
+        this.user.followersCount = this.user.followersCount + (this.user.followed ? -1 : 1);
+        this.user.followed = !this.user.followed;
 
         return HTTP[verb](`/users/${this.user.id}/followers`);
-      },
-
-      initialize() {
-        this.getUser.execute();
-
-        this.singlePost = this.postId !== undefined;
-        this.actualPromise = this.singlePost ? this.getSinglePost.execute() : this.getPosts.execute();
-
-        Promise.all([
-          this.getFollowers.execute(),
-          this.actualPromise
-        ]).finally(() => {
-          this.isLoading = false;
-        });
       }
     },
 
     created() {
-      this.initialize();
+      this.getUser.execute();
     },
 
     watch: {
-      postId(val) {
-        this.initialize();
+      vanity() {
+        this.getUser.execute();
       }
     }
   }
