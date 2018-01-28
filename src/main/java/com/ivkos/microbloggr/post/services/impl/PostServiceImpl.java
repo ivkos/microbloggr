@@ -88,9 +88,10 @@ class PostServiceImpl implements PostService
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Post> getFeedForUser(User user)
     {
-        List<User> users = new LinkedList<>();
+        Set<User> users = new HashSet<>();
 
         users.add(user);
         users.addAll(followService.getFolloweesOfUser(user));
