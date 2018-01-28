@@ -77,6 +77,10 @@ public class User implements UserDetails
     @JsonIgnore
     private Picture picture;
 
+    @Transient private Long followersCount;
+    @Transient private Long followeesCount;
+    @Transient private Boolean isFollowed;
+
     User() {}
 
     User(UUID id)
@@ -180,6 +184,39 @@ public class User implements UserDetails
     public String getPictureId()
     {
         return picture != null ? picture.getId().toString() : null;
+    }
+
+    public Long getFollowersCount()
+    {
+        return followersCount;
+    }
+
+    public User setFollowersCount(Long followersCount)
+    {
+        this.followersCount = followersCount;
+        return this;
+    }
+
+    public Long getFolloweesCount()
+    {
+        return followeesCount;
+    }
+
+    public User setFolloweesCount(Long followeesCount)
+    {
+        this.followeesCount = followeesCount;
+        return this;
+    }
+
+    public Boolean getFollowed()
+    {
+        return isFollowed;
+    }
+
+    public User setFollowed(Boolean followed)
+    {
+        isFollowed = followed;
+        return this;
     }
 
     //region UserDetails boilerplate
