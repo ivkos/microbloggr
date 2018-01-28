@@ -6,9 +6,8 @@
   export default {
     name: 'MeRedirector',
     async created() {
-      var res = await HTTP.get("/users/me");
-
-      this.$router.push({ name: 'UserProfile', params: { vanity: res.data.vanity } });
+      const res = await HTTP.get("/users/me");
+      this.$router.push(`/${res.data.vanity}`);
     }
   }
 </script>

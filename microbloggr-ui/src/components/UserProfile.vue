@@ -38,7 +38,7 @@
           <div class="header">{{ user.name || user.vanity }}</div>
 
           <div class="meta">
-            <router-link :to="{ name: 'UserProfile', params: { vanity: user.vanity }}">
+            <router-link :to="`/${user.vanity}`">
               @{{ user.vanity }}
             </router-link>
           </div>

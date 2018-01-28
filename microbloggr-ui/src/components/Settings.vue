@@ -75,8 +75,7 @@
           <div class="header">{{ form.name || form.vanity }}</div>
 
           <div class="meta">
-            <router-link :to="{ name: 'UserProfile', params: { vanity: form.vanity }}">@{{ form.vanity }}
-            </router-link>
+            <router-link :to="`/${user.vanity}`">@{{ form.vanity }}</router-link>
           </div>
         </div>
       </div>
