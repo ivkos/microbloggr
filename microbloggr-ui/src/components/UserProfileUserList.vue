@@ -33,7 +33,7 @@
 </template>
 
 <script>
-  import { HTTP } from "../support/http-common"
+  import HTTP from "../support/http"
 
   export default {
     name: 'UserProfileUserList',

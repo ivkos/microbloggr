@@ -19,7 +19,7 @@
 </template>
 
 <script>
-  import { HTTP } from "../support/http-common"
+  import HTTP from "../support/http"
   import PostCard from "./PostCard"
 
   export default {

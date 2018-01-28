@@ -45,7 +45,7 @@
 
 <script>
   import AppState from "../support/AppState";
-  import { HTTP } from "../support/http-common"
+  import HTTP from "../support/http"
 
   export default {
     name: 'Admin',

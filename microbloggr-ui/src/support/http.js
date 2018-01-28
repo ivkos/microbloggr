@@ -14,4 +14,4 @@ HTTP.interceptors.request.use(function (config) {
   return config;
 });
 
-export { HTTP };
+export default HTTP;
