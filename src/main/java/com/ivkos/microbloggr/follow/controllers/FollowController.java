@@ -17,6 +17,7 @@
 package com.ivkos.microbloggr.follow.controllers;
 
 import com.ivkos.microbloggr.follow.services.FollowService;
+import com.ivkos.microbloggr.follow.services.FollowSuggestionService;
 import com.ivkos.microbloggr.user.models.User;
 import com.ivkos.microbloggr.user.services.UserIdentityResolverService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,13 +32,16 @@ class FollowController
 {
     private final UserIdentityResolverService userIdentityResolverService;
     private final FollowService followService;
+    private final FollowSuggestionService followSuggestionService;
 
     @Autowired
     FollowController(UserIdentityResolverService userIdentityResolverService,
-                     FollowService followService)
+                     FollowService followService,
+                     FollowSuggestionService followSuggestionService)
     {
         this.userIdentityResolverService = userIdentityResolverService;
         this.followService = followService;
+        this.followSuggestionService = followSuggestionService;
     }
 
     @GetMapping("/users/{identity}/followers")
@@ -68,5 +72,11 @@ class FollowController
         User followee = userIdentityResolverService.resolve(identity, currentUser);
         followService.unfollow(currentUser, followee);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/suggest/followees")
+    List<User> suggestFollowees(@AuthenticationPrincipal User viewer)
+    {
+        return followSuggestionService.suggestFollowees(viewer);
     }
 }
