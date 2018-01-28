@@ -1,5 +1,8 @@
 <template>
-  <div class="ui raised fluid card" v-if="post && !deleted">
+  <div class="ui fluid  card" v-if="post && !deleted"
+       @mouseover="hovered = true" @mouseleave="hovered = false"
+       :class="{ raised: hovered }"
+  >
     <div class="content">
       <div class="right floated meta">
         <router-link :to="`/${post.author.vanity}/posts/${post.id}`">{{ post.createdAt | moment("from") }}</router-link>
@@ -57,7 +60,8 @@
 
     data() {
       return {
-        deleted: false
+        deleted: false,
+        hovered: false
       }
     },
 
