@@ -99,6 +99,12 @@ class PostServiceImpl implements PostService
     }
 
     @Override
+    public long getPostsCountByUser(User user)
+    {
+        return repository.countAllByAuthor(user);
+    }
+
+    @Override
     public Post create(Post post)
     {
         return repository.save(post);

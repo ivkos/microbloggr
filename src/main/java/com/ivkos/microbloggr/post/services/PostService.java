@@ -33,4 +33,6 @@ public interface PostService extends CrudEntityService<Post, UUID>
     List<Post> getPostsByMultipleUsers(Collection<User> users);
 
     List<Post> getFeedForUser(User user);
+
+    long getPostsCountByUser(User user);
 }

@@ -29,4 +29,6 @@ public interface PostRepository extends JpaRepository<Post, UUID>
     Stream<Post> findAllByAuthorOrderByCreatedAtDesc(User author);
 
     Stream<Post> findAllByAuthorInOrderByCreatedAtDesc(Collection<User> authors);
+
+    long countAllByAuthor(User author);
 }

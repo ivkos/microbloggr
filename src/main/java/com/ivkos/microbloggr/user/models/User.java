@@ -80,6 +80,7 @@ public class User implements UserDetails
     @Transient private Long followersCount;
     @Transient private Long followeesCount;
     @Transient private Boolean isFollowed;
+    @Transient private Long postsCount;
 
     User() {}
 
@@ -216,6 +217,17 @@ public class User implements UserDetails
     public User setFollowed(Boolean followed)
     {
         isFollowed = followed;
+        return this;
+    }
+
+    public Long getPostsCount()
+    {
+        return postsCount;
+    }
+
+    public User setPostsCount(Long postsCount)
+    {
+        this.postsCount = postsCount;
         return this;
     }
 

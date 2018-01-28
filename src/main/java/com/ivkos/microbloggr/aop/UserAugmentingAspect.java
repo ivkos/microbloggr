@@ -17,6 +17,7 @@
 package com.ivkos.microbloggr.aop;
 
 import com.ivkos.microbloggr.follow.services.FollowService;
+import com.ivkos.microbloggr.post.services.PostService;
 import com.ivkos.microbloggr.user.models.User;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
@@ -27,13 +28,15 @@ import java.util.List;
 
 @Aspect
 @Component
-class UserFollowStatusAugmentingAspect extends AbstractAuthenticationPrincipalAwareEntityAugmentingAspect<User>
+class UserAugmentingAspect extends AbstractAuthenticationPrincipalAwareEntityAugmentingAspect<User>
 {
+    private final PostService postService;
     private final FollowService followService;
 
     @Autowired
-    UserFollowStatusAugmentingAspect(FollowService followService)
+    UserAugmentingAspect(PostService postService, FollowService followService)
     {
+        this.postService = postService;
         this.followService = followService;
     }
 
@@ -68,6 +71,10 @@ class UserFollowStatusAugmentingAspect extends AbstractAuthenticationPrincipalAw
 
         if (authenticationPrincipal != null && user.getFollowed() == null) {
             user.setFollowed(followService.doesFollow((User) authenticationPrincipal, user));
+        }
+
+        if (user.getPostsCount() == null) {
+            user.setPostsCount(postService.getPostsCountByUser(user));
         }
     }
 }
